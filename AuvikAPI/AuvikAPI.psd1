@@ -72,8 +72,10 @@ NestedModules = 'Internal/BaseURI.ps1',
                 'Internal/APICredential.ps1',
                 'Internal/ModuleSettings.ps1',
                 'Resources/Authentication.ps1',
-                'Resources/Device.ps1',
+                'Resources/Component.ps1',
                 'Resources/Configuration.ps1',
+                'Resources/Device.ps1',
+                'Resources/Interface.ps1',
                 'Resources/Network.ps1',
                 'Resources/Tenants.ps1'
 
@@ -90,11 +92,15 @@ FunctionsToExport = 'Add-AuvikAPICredential',
                     'Export-AuvikModuleSettings',
                     'Import-AuvikModuleSettings',
 
+                    'Get-AuvikComponentsInfo',
+
                     'Get-AuvikDeviceConfiguration',
 
                     'Get-AuvikDevicesInfo',
                     'Get-AuvikDevicesDetails',
                     'Get-AuvikDevicesExtendedDetails',
+
+                    'Get-AuvikInterfacesInfo',
 
                     'Get-AuvikNetworksInfo',
                     'Get-AuvikNetworksDetails',

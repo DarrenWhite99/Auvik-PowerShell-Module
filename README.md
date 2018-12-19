@@ -89,10 +89,23 @@ Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]
     -ModifiedAfter [Datestamp for earliest record]  
 
 ## Interface
-**Coming Soon**
+### Get-AuvikInterfacesInfo
+Description: Returns Interface Information  
+Options: -ID [List of Interface IDs] 
+Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
+    -InterfaceType [ethernet|wifi|bluetooth|cdma|coax|cpu|firewire|gsm|ieee8023AdLag|inferredWired|inferredWireless|linkAggregation|loopback|modem|wimax|optical|other|parallel|ppp|rs232|tunnel|unknown|usb|virtualBridge|virtualNic|virtualSwitch|vlan|distributedVirtualSwitch|interface]
+    -AdminStatus [True|False|Null]  
+    -OperationalStatus [online|offline|unreachable|testing|unknown|dormant|notPresent]
+    -ModifiedAfter [Datestamp for earliest record]  
 
 ## Component
-**Coming Soon**
+### Get-AuvikComponentsInfo
+Description: Returns Component Information  
+Options: -ID [List of Component IDs] 
+Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
+    -DeviceName [Match for Device Name]
+    -CurrentStatus [ok|degraded|failed]  
+    -ModifiedAfter [Datestamp for earliest record]  
 
 ## Entity
 **Coming Soon**
