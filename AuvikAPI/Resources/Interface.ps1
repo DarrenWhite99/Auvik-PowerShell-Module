@@ -58,7 +58,7 @@ Process {
             }
         }
         if ($ModifiedAfter) {
-            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter}
+            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
     else {

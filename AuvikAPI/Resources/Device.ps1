@@ -79,7 +79,7 @@ Process {
             $qparams += @{'filter[onlineStatus]' = $Status}
         }
         if ($ModifiedAfter) {
-            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter}
+            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
     else {
@@ -270,7 +270,7 @@ Process {
             $qparams += @{'filter[deviceType]' = $DeviceType}
         }
         if ($ModifiedAfter) {
-            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter}
+            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
     else {

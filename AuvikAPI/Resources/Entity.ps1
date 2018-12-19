@@ -47,7 +47,7 @@ Process {
             $qparams += @{'filter[status]' = $Status}
         }
         if ($ModifiedAfter) {
-            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter}
+            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
     else {
@@ -140,7 +140,7 @@ Process {
             $qparams += @{'filter[lastModifiedBy]' = $User}
         }
         if ($ModifiedAfter) {
-            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter}
+            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
     else {

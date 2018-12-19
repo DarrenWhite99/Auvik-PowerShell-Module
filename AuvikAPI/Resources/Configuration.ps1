@@ -5,7 +5,7 @@ function Get-AuvikDeviceConfiguration {
         [String[]]$Id,
  
         [Parameter(ParameterSetName = 'index')]
-        [String[]]$Devices,
+        [String[]]$Devices = '',
  
         [Parameter(ParameterSetName = 'index')]
         [String[]]$Tenants = '',
@@ -36,10 +36,10 @@ Process {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
         if ($BackupTimeAfter) {
-            $qparams += @{'filter[BackupTimeAfter]' = $BackupTimeAfter}
+            $qparams += @{'filter[backupTimeAfter]' = $BackupTimeAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
         if ($BackupTimeBefore) {
-            $qparams += @{'filter[BackupTimeBefore]' = $BackupTimeBefore}
+            $qparams += @{'filter[backupTimeBefore]' = $BackupTimeBefore.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
         if ($Null -ne $IsRunning) {
             if ($IsRunning -eq $True) {

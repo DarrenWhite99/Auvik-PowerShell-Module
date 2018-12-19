@@ -52,7 +52,7 @@ Process {
             $qparams += @{'filter[scanStatus]' = $ScanStatus}
         }
         if ($ModifiedAfter) {
-            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter}
+            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
     else {
@@ -153,7 +153,7 @@ Process {
             $qparams += @{'filter[scope]' = $Scope}
         }
         if ($ModifiedAfter) {
-            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter}
+            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
     else {
