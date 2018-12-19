@@ -5,7 +5,7 @@ PowerShell Wrapper for the Auvik API
 ### Add-AuvikBaseURI
 Description: Set the URI for API access  
 Options: -Base_URI [URL]  
-Options: -DC [US/EU]  
+Options: -DC [US|EU]  
 ### Get-AuvikBaseURI
 Description: Returns the URI configured for the current session  
 Options: None
@@ -45,31 +45,48 @@ Options: None
 ## Device
 ### Get-AuvikDevicesInfo
 Description: Returns Device Information  
-Options: -ID [List of Device IDs] -IncludeDetailFields [Return Addition Detail for one or more of these fields: discoveryStatus, components, connectedDevices, configurations, manageStatus, interfaces]  
+Options: -ID [List of Device IDs] -IncludeDetailFields [Return Additional Detail for one or more of these fields: discoveryStatus, components, connectedDevices, configurations, manageStatus, interfaces]  
 Options: -Tenants [List of Tenant IDs] -Networks [List of Network IDs]  
     -MakeModel [Match for Make/Model] -VendorName [Match for Vendor]  
     -ModifiedAfter [Datestamp for earliest record]  
     -IncludeDetailFields [discoveryStatus, components, connectedDevices, configurations, manageStatus, interfaces]  
-    -Status [online, offline, unreachable, testing, unknown, dormant, notPresent, lowerLayerDown]  
-    -DeviceType [unknown, switch, l3Switch, router, accessPoint, firewall, workstation, server, storage, printer, copier, hypervisor, multimedia, phone, tablet, handheld, virtualAppliance, bridge, controller, hub, modem, ups, module, loadBalancer, camera, telecommunications, packetProcessor, chassis, airConditioner, virtualMachine, pdu, ipPhone, backhaul, internetOfThings, voipSwitch, stack, backupDevice, timeClock, lightingDevice, audioVisual, securityAppliance, utm, alarm, buildingManagement, ipmi, thinAccessPoint, thinClient]  
+    -Status [online|offline|unreachable|testing|unknown|dormant|notPresent|lowerLayerDown]  
+    -DeviceType [unknown|switch|l3Switch|router|accessPoint|firewall|workstation|server|storage|printer|copier|hypervisor|multimedia|phone|tablet|handheld|virtualAppliance|bridge|controller|hub|modem|ups|module|loadBalancer|camera|telecommunications|packetProcessor|chassis|airConditioner|virtualMachine|pdu|ipPhone|backhaul|internetOfThings|voipSwitch|stack|backupDevice|timeClock|lightingDevice|audioVisual|securityAppliance|utm|alarm|buildingManagement|ipmi|thinAccessPoint|thinClient]  
 
 ### Get-AuvikDevicesDetails
 Description: Returns Device Details  
 Options: -ID [List of Device IDs]  
-Options: -Tenants [List of Tenant IDs] -ManagedStatus [True/False/Null]  
-    -SNMPDiscovery = [disabled, determining, notSupported, notAuthorized, authorizing, authorized, privileged]  
-    -WMIDiscovery = [disabled, determining, notSupported, notAuthorized, authorizing, authorized, privileged]  
-    -LoginDiscovery = [disabled, determining, notSupported, notAuthorized, authorizing, authorized, privileged]  
-    -VMWareDiscovery = [disabled, determining, notSupported, notAuthorized, authorizing, authorized, privileged]  
+Options: -Tenants [List of Tenant IDs] -ManagedStatus [True|False|Null]  
+    -SNMPDiscovery = [disabled|determining|notSupported|notAuthorized|authorizing|authorized|privileged]  
+    -WMIDiscovery = [disabled|determining|notSupported|notAuthorized|authorizing|authorized|privileged]  
+    -LoginDiscovery = [disabled|determining|notSupported|notAuthorized|authorizing|authorized|privileged]  
+    -VMWareDiscovery = [disabled|determining|notSupported|notAuthorized|authorizing|authorized|privileged]  
 
 ### Get-AuvikDevicesExtendedDetails
 Description: Returns Extended Device Information. Information varies by Device Type  
 Options: -ID [List of Device IDs]  
 Options: -Tenants [List of Tenant IDs] -ModifiedAfter [Datestamp for earliest record]  
-    -DeviceType [unknown, switch, l3Switch, router, accessPoint, firewall, workstation, server, storage, printer, copier, hypervisor, multimedia, phone, tablet, handheld, virtualAppliance, bridge, controller, hub, modem, ups, module, loadBalancer, camera, telecommunications, packetProcessor, chassis, airConditioner, virtualMachine, pdu, ipPhone, backhaul, internetOfThings, voipSwitch, stack, backupDevice, timeClock, lightingDevice, audioVisual, securityAppliance, utm, alarm, buildingManagement, ipmi, thinAccessPoint, thinClient]  
+    -DeviceType [unknown|switch|l3Switch|router|accessPoint|firewall|workstation|server|storage|printer|copier|hypervisor|multimedia|phone|tablet|handheld|virtualAppliance|bridge|controller|hub|modem|ups|module|loadBalancer|camera|telecommunications|packetProcessor|chassis|airConditioner|virtualMachine|pdu|ipPhone|backhaul|internetOfThings|voipSwitch|stack|backupDevice|timeClock|lightingDevice|audioVisual|securityAppliance|utm|alarm|buildingManagement|ipmi|thinAccessPoint|thinClient]  
 
 ## Network
-**Coming Soon**
+### Get-AuvikNetworksInfo
+Description: Returns Network Information  
+Options: -ID [List of Network IDs] -IncludeDetailFields [Return Additional Detail for one or more of these fields: scope, primaryCollector, secondaryCollectors, collectorSelection, excludedIpAddresses]
+Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
+    -NetworkType [routed|vlan|wifi|loopback|network|layer2|internet]
+    -IncludeDetailFields [scope, primaryCollector, secondaryCollectors, collectorSelection, excludedIpAddresses]
+    -ScanStatus [true|false|notAllowed|unknown]
+    -ModifiedAfter [Datestamp for earliest record]  
+
+### Get-AuvikNetworksDetails
+Description: Returns Network Details  
+Options: -ID [List of Network IDs] 
+Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
+    -NetworkType [routed|vlan|wifi|loopback|network|layer2|internet]
+    -IncludeDetailFields [scope, primaryCollector, secondaryCollectors, collectorSelection, excludedIpAddresses]
+    -ScanStatus [true|false|notAllowed|unknown]
+    -Scope [private|public]
+    -ModifiedAfter [Datestamp for earliest record]  
 
 ## Interface
 **Coming Soon**
@@ -84,9 +101,10 @@ Options: -Tenants [List of Tenant IDs] -ModifiedAfter [Datestamp for earliest re
 ### Get-AuvikDeviceConfiguration
 Description: Returns information on device configurations.  
 Options: -ID [Configuration ID]  
-Options: -Tenants [List of Tenant IDs] -DeviceID [Device ID] -BackupTimeAfter [Datestamp for earliest backup] -BackupTimeBefore [Datestamp for latest backup] -IsRunning [True/False/Null]  
+Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs] -BackupTimeAfter [Datestamp for earliest backup] -BackupTimeBefore [Datestamp for latest backup] -IsRunning [True|False|Null]  
+
 # Example
-Return all tenants. Return managed devices for each and return device counts for each type of device.  
+Return all tenants. Return managed devices for each tenant and return device counts for each type of device.  
 
         Import-Module AuvikAPI  
         if (Confirm-AuvikAPICredential -Quiet) {  

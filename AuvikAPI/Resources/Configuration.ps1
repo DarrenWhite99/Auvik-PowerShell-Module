@@ -5,7 +5,7 @@ function Get-AuvikDeviceConfiguration {
         [String[]]$Id,
  
         [Parameter(ParameterSetName = 'index')]
-        [String[]]$DeviceId,
+        [String[]]$Devices,
  
         [Parameter(ParameterSetName = 'index')]
         [String[]]$Tenants = '',
@@ -51,16 +51,16 @@ Process {
     }
     else {
         #Parameter set "Show" is selected
-        $DeviceId = @('')
+        $Devices = @('')
     }
 
     foreach ($configId IN $Id) {
-        foreach ($x_deviceId IN $DeviceId) {
+        foreach ($DeviceId IN $Devices) {
             $resource_uri = ('/v1/inventory/configuration')
             if (!($Null -eq $configID) -and $configId -gt '') {
                 $resource_uri = ('/v1/inventory/configuration/{0}' -f $configId)
-            } elseif (!($Null -eq $x_deviceId) -and $x_deviceId -gt '') {
-                $qparams['filter[deviceId]'] = $x_deviceId
+            } elseif (!($Null -eq $DeviceId) -and $DeviceId -gt '') {
+                $qparams['filter[deviceId]'] = $DeviceId
             } else {
                 $Null = $qparams.Remove('filter[deviceId]')
             }
