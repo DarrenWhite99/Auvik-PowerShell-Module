@@ -55,7 +55,7 @@ Begin {
 
 Process {
     if ($IncludeDetailFields) {
-        $qparams += @{'include' = 'deviceDetail'; 'fields[deviceDetail]' = $Fields -join ','}
+        $qparams += @{'include' = 'deviceDetail'; 'fields[deviceDetail]' = $IncludeDetailFields -join ','}
     }
 
     if ($PSCmdlet.ParameterSetName -eq 'index') {
