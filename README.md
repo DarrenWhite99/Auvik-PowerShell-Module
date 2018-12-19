@@ -68,6 +68,18 @@ Options: -ID [List of Device IDs]
 Options: -Tenants [List of Tenant IDs] -ModifiedAfter [Datestamp for earliest record]  
     -DeviceType [unknown, switch, l3Switch, router, accessPoint, firewall, workstation, server, storage, printer, copier, hypervisor, multimedia, phone, tablet, handheld, virtualAppliance, bridge, controller, hub, modem, ups, module, loadBalancer, camera, telecommunications, packetProcessor, chassis, airConditioner, virtualMachine, pdu, ipPhone, backhaul, internetOfThings, voipSwitch, stack, backupDevice, timeClock, lightingDevice, audioVisual, securityAppliance, utm, alarm, buildingManagement, ipmi, thinAccessPoint, thinClient]  
 
+## Network
+**Coming Soon**
+
+## Interface
+**Coming Soon**
+
+## Component
+**Coming Soon**
+
+## Entity
+**Coming Soon**
+
 ## Configuration
 ### Get-AuvikDeviceConfiguration
 Description: Returns information on device configurations.  
