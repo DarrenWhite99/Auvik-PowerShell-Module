@@ -5,7 +5,7 @@ PowerShell Wrapper for the Auvik API
 ### Add-AuvikBaseURI
 Description: Set the URI for API access  
 
-    Options: [-Base_URI <URL>]  
+    Options: [-BaseURI <URL>]  
     Options: [-DC <US|EU>]  
 
 ### Get-AuvikBaseURI

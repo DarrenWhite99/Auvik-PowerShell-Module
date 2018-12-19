@@ -2,7 +2,8 @@ function Add-AuvikBaseURI {
     [cmdletbinding()]
     Param (
         [parameter(ValueFromPipeline)]
-        [string]$Base_URI = 'https://auvikapi.us1.my.auvik.com',
+        [Alias('Email')]
+        [string]$BaseURI = 'https://auvikapi.us1.my.auvik.com',
 
         [Alias('locale','dc')]
         [ValidateSet( 'US', 'EU')]
@@ -10,17 +11,17 @@ function Add-AuvikBaseURI {
     )
 
     # Trim superflous forward slash from address (if applicable)
-    if($base_uri[$base_uri.Length-1] -eq "/") {
-        $base_uri = $base_uri.Substring(0,$base_uri.Length-1)
+    if($BaseURI[$BaseURI.Length-1] -eq "/") {
+        $BaseURI = $BaseURI.Substring(0,$BaseURI.Length-1)
     }
 
     switch ($data_center) {
-        'US' {$base_uri = 'https://auvikapi.us1.my.auvik.com'}
-        'EU' {$base_uri = 'https://auvikapi.eu1.my.auvik.com'}
+        'US' {$BaseURI = 'https://auvikapi.us1.my.auvik.com'}
+        'EU' {$BaseURI = 'https://auvikapi.eu1.my.auvik.com'}
         Default {}
     }
 
-    Set-Variable -Name "Auvik_Base_URI" -Value $base_uri -Option ReadOnly -Scope global -Force
+    Set-Variable -Name "Auvik_Base_URI" -Value $BaseURI -Option ReadOnly -Scope global -Force
 }
 
 function Remove-AuvikBaseURI {
