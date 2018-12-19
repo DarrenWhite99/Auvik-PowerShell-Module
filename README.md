@@ -31,16 +31,26 @@ Description: Loads previously exported settings.
 Options: None  
 
 # Functions by Endpoint
+## Component
+### Get-AuvikComponentsInfo
+Description: Returns Component Information  
+Options: -ID [List of Component IDs] 
+Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
+    -DeviceName [Match for Device Name]
+    -CurrentStatus [ok|degraded|failed]  
+    -ModifiedAfter [Datestamp for earliest record]  
+
+## Configuration
+### Get-AuvikDeviceConfiguration
+Description: Returns information on device configurations.  
+Options: -ID [Configuration ID]  
+Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs] -BackupTimeAfter [Datestamp for earliest backup] -BackupTimeBefore [Datestamp for latest backup] -IsRunning [True|False|Null]  
+
 ## Credentials
 ### Confirm-AuvikAPICredential
 Description: Test the current or provided credential to verify access. Returns the server response or True/False with -Quiet  
 Options: -UserName [Auvik Username] -ApiKey [User API Key] | -Credential [Credential Object]  
 Options: -Quiet  
-
-## Tenants
-### Get-AuvikTenants
-Description: Returns the list of tenant IDs available for the current user  
-Options: None  
 
 ## Device
 ### Get-AuvikDevicesInfo
@@ -68,6 +78,34 @@ Options: -ID [List of Device IDs]
 Options: -Tenants [List of Tenant IDs] -ModifiedAfter [Datestamp for earliest record]  
     -DeviceType [unknown|switch|l3Switch|router|accessPoint|firewall|workstation|server|storage|printer|copier|hypervisor|multimedia|phone|tablet|handheld|virtualAppliance|bridge|controller|hub|modem|ups|module|loadBalancer|camera|telecommunications|packetProcessor|chassis|airConditioner|virtualMachine|pdu|ipPhone|backhaul|internetOfThings|voipSwitch|stack|backupDevice|timeClock|lightingDevice|audioVisual|securityAppliance|utm|alarm|buildingManagement|ipmi|thinAccessPoint|thinClient]  
 
+## Entity
+### Get-AuvikEntityAudits
+Description: Returns Audit Information  
+Options: -ID [List of Audit IDs] 
+Options: -Tenants [List of Tenant IDs] -User [Match for User Name]
+    -Category [unknown|tunnel|terminal]
+    -Status [unknown|initiated|created|closed|failed]
+    -ModifiedAfter [Datestamp for earliest record]  
+
+### Get-AuvikEntityNotes
+Description: Returns Note Information  
+Options: -ID [List of Note IDs] 
+Options: -Tenants [List of Tenant IDs] -Entities [List of Entity IDs]  
+    -EntityName [Match for Entity Name]
+    -User [Match for User Name]  
+    -Type [root|device|network|interface]
+    -ModifiedAfter [Datestamp for earliest record]  
+
+## Interface
+### Get-AuvikInterfacesInfo
+Description: Returns Interface Information  
+Options: -ID [List of Interface IDs] 
+Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
+    -InterfaceType [ethernet|wifi|bluetooth|cdma|coax|cpu|firewire|gsm|ieee8023AdLag|inferredWired|inferredWireless|linkAggregation|loopback|modem|wimax|optical|other|parallel|ppp|rs232|tunnel|unknown|usb|virtualBridge|virtualNic|virtualSwitch|vlan|distributedVirtualSwitch|interface]
+    -AdminStatus [True|False|Null]  
+    -OperationalStatus [online|offline|unreachable|testing|unknown|dormant|notPresent]
+    -ModifiedAfter [Datestamp for earliest record]  
+
 ## Network
 ### Get-AuvikNetworksInfo
 Description: Returns Network Information  
@@ -88,33 +126,10 @@ Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]
     -Scope [private|public]
     -ModifiedAfter [Datestamp for earliest record]  
 
-## Interface
-### Get-AuvikInterfacesInfo
-Description: Returns Interface Information  
-Options: -ID [List of Interface IDs] 
-Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
-    -InterfaceType [ethernet|wifi|bluetooth|cdma|coax|cpu|firewire|gsm|ieee8023AdLag|inferredWired|inferredWireless|linkAggregation|loopback|modem|wimax|optical|other|parallel|ppp|rs232|tunnel|unknown|usb|virtualBridge|virtualNic|virtualSwitch|vlan|distributedVirtualSwitch|interface]
-    -AdminStatus [True|False|Null]  
-    -OperationalStatus [online|offline|unreachable|testing|unknown|dormant|notPresent]
-    -ModifiedAfter [Datestamp for earliest record]  
-
-## Component
-### Get-AuvikComponentsInfo
-Description: Returns Component Information  
-Options: -ID [List of Component IDs] 
-Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
-    -DeviceName [Match for Device Name]
-    -CurrentStatus [ok|degraded|failed]  
-    -ModifiedAfter [Datestamp for earliest record]  
-
-## Entity
-**Coming Soon**
-
-## Configuration
-### Get-AuvikDeviceConfiguration
-Description: Returns information on device configurations.  
-Options: -ID [Configuration ID]  
-Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs] -BackupTimeAfter [Datestamp for earliest backup] -BackupTimeBefore [Datestamp for latest backup] -IsRunning [True|False|Null]  
+## Tenants
+### Get-AuvikTenants
+Description: Returns the list of tenant IDs available for the current user  
+Options: None  
 
 # Example
 Return all tenants. Return managed devices for each tenant and return device counts for each type of device.  
