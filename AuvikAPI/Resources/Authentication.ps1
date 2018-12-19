@@ -5,6 +5,7 @@ function Confirm-AuvikAPICredential {
         [String]$UserName = '',
 
         [Parameter(ParameterSetName = 'userkey')]
+        [Alias('APIKey')]
         [String]$API_Key = '',
 
         [Parameter(ParameterSetName = 'credential')]

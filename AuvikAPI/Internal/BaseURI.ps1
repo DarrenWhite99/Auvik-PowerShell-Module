@@ -2,7 +2,7 @@ function Add-AuvikBaseURI {
     [cmdletbinding()]
     Param (
         [parameter(ValueFromPipeline)]
-        [string]$base_uri = 'https://auvikapi.us1.my.auvik.com',
+        [string]$Base_URI = 'https://auvikapi.us1.my.auvik.com',
 
         [Alias('locale','dc')]
         [ValidateSet( 'US', 'EU')]
