@@ -36,7 +36,7 @@ Options: None
 Description: Returns Component Information  
 Options: -ID [List of Component IDs] 
 Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
-    -DeviceName [Match for Device Name]
+    -DeviceName [Match for Device Name]  
     -CurrentStatus [ok|degraded|failed]  
     -ModifiedAfter [Datestamp for earliest record]  
 
@@ -81,49 +81,49 @@ Options: -Tenants [List of Tenant IDs] -ModifiedAfter [Datestamp for earliest re
 ## Entity
 ### Get-AuvikEntityAudits
 Description: Returns Audit Information  
-Options: -ID [List of Audit IDs] 
-Options: -Tenants [List of Tenant IDs] -User [Match for User Name]
-    -Category [unknown|tunnel|terminal]
-    -Status [unknown|initiated|created|closed|failed]
+Options: -ID [List of Audit IDs]  
+Options: -Tenants [List of Tenant IDs] -User [Match for User Name]  
+    -Category [unknown|tunnel|terminal]  
+    -Status [unknown|initiated|created|closed|failed]  
     -ModifiedAfter [Datestamp for earliest record]  
 
 ### Get-AuvikEntityNotes
 Description: Returns Note Information  
-Options: -ID [List of Note IDs] 
+Options: -ID [List of Note IDs]  
 Options: -Tenants [List of Tenant IDs] -Entities [List of Entity IDs]  
-    -EntityName [Match for Entity Name]
+    -EntityName [Match for Entity Name]  
     -User [Match for User Name]  
-    -Type [root|device|network|interface]
+    -Type [root|device|network|interface]  
     -ModifiedAfter [Datestamp for earliest record]  
 
 ## Interface
 ### Get-AuvikInterfacesInfo
 Description: Returns Interface Information  
-Options: -ID [List of Interface IDs] 
+Options: -ID [List of Interface IDs]  
 Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
-    -InterfaceType [ethernet|wifi|bluetooth|cdma|coax|cpu|firewire|gsm|ieee8023AdLag|inferredWired|inferredWireless|linkAggregation|loopback|modem|wimax|optical|other|parallel|ppp|rs232|tunnel|unknown|usb|virtualBridge|virtualNic|virtualSwitch|vlan|distributedVirtualSwitch|interface]
+    -InterfaceType [ethernet|wifi|bluetooth|cdma|coax|cpu|firewire|gsm|ieee8023AdLag|inferredWired|inferredWireless|linkAggregation|loopback|modem|wimax|optical|other|parallel|ppp|rs232|tunnel|unknown|usb|virtualBridge|virtualNic|virtualSwitch|vlan|distributedVirtualSwitch|interface]  
     -AdminStatus [True|False|Null]  
-    -OperationalStatus [online|offline|unreachable|testing|unknown|dormant|notPresent]
+    -OperationalStatus [online|offline|unreachable|testing|unknown|dormant|notPresent]  
     -ModifiedAfter [Datestamp for earliest record]  
 
 ## Network
 ### Get-AuvikNetworksInfo
 Description: Returns Network Information  
-Options: -ID [List of Network IDs] -IncludeDetailFields [Return Additional Detail for one or more of these fields: scope, primaryCollector, secondaryCollectors, collectorSelection, excludedIpAddresses]
+Options: -ID [List of Network IDs] -IncludeDetailFields [Return Additional Detail for one or more of these fields: scope, primaryCollector, secondaryCollectors, collectorSelection, excludedIpAddresses]  
 Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
-    -NetworkType [routed|vlan|wifi|loopback|network|layer2|internet]
-    -IncludeDetailFields [scope, primaryCollector, secondaryCollectors, collectorSelection, excludedIpAddresses]
-    -ScanStatus [true|false|notAllowed|unknown]
+    -NetworkType [routed|vlan|wifi|loopback|network|layer2|internet]  
+    -IncludeDetailFields [scope, primaryCollector, secondaryCollectors, collectorSelection, excludedIpAddresses]  
+    -ScanStatus [true|false|notAllowed|unknown]  
     -ModifiedAfter [Datestamp for earliest record]  
 
 ### Get-AuvikNetworksDetails
 Description: Returns Network Details  
-Options: -ID [List of Network IDs] 
+Options: -ID [List of Network IDs]  
 Options: -Tenants [List of Tenant IDs] -Devices [List of Device IDs]  
-    -NetworkType [routed|vlan|wifi|loopback|network|layer2|internet]
-    -IncludeDetailFields [scope, primaryCollector, secondaryCollectors, collectorSelection, excludedIpAddresses]
-    -ScanStatus [true|false|notAllowed|unknown]
-    -Scope [private|public]
+    -NetworkType [routed|vlan|wifi|loopback|network|layer2|internet]  
+    -IncludeDetailFields [scope, primaryCollector, secondaryCollectors, collectorSelection, excludedIpAddresses]  
+    -ScanStatus [true|false|notAllowed|unknown]  
+    -Scope [private|public]  
     -ModifiedAfter [Datestamp for earliest record]  
 
 ## Tenants
