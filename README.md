@@ -87,19 +87,21 @@ Options: -ID [Configuration ID]
 Options: -Tenants [List of Tenant IDs] -DeviceID [Device ID] -BackupTimeAfter [Datestamp for earliest backup] -BackupTimeBefore [Datestamp for latest backup] -IsRunning [True/False/Null]  
 # Example
 Return all tenants. Return managed devices for each and return device counts for each type of device.  
-    Import-Module AuvikAPI  
-    if (Confirm-AuvikAPICredential -Quiet) {  
-        $AuvikTenants = Get-AuvikTenants | Where-Object {$_.attributes.tenantType -eq 'client'}  
-        foreach ($tenant in $AuvikTenants) {  
-            $TenantDevices = Get-AuvikDevicesInfo -Tenant $tenant.ID -IncludeDetailFields manageStatus  
-            $ManagedDeviceIDs = $TenantDevices | Select-Object -ExpandProperty 'Included' -ErrorAction SilentlyContinue | Where-Object {$_.attributes.manageStatus -eq 'true'} | Select-Object -ExpandProperty 'ID' -ErrorAction SilentlyContinue  
-            $ManagedDevices = $TenantDevices | Select-Object -ExpandProperty 'Data' -ErrorAction SilentlyContinue | Where-Object {$ManagedDeviceIDs -contains $_.ID}  
-            $ManagedDevicesGroup = $ManagedDevices | Select-Object -ExpandProperty Attributes -ErrorAction SilentlyContinue | Group-Object -Property deviceType -AsHashTable -ErrorAction SilentlyContinue  
-            if ($ManagedDevicesGroup) {  
-                Write-Output "Client: $($tenant.attributes.domainPrefix)"  
-                foreach ($deviceType in $ManagedDevicesGroup.Keys) {  
-                    Write-Output "$deviceType,$($ManagedDevicesGroup.$deviceType.Count)"  
+
+        Import-Module AuvikAPI  
+        if (Confirm-AuvikAPICredential -Quiet) {  
+            $AuvikTenants = Get-AuvikTenants | Where-Object {$_.attributes.tenantType -eq 'client'}  
+            foreach ($tenant in $AuvikTenants) {  
+                $TenantDevices = Get-AuvikDevicesInfo -Tenant $tenant.ID -IncludeDetailFields manageStatus  
+                $ManagedDeviceIDs = $TenantDevices | Select-Object -ExpandProperty 'Included' -ErrorAction SilentlyContinue | Where-Object {$_.attributes.manageStatus -eq 'true'} | Select-Object -ExpandProperty 'ID' -ErrorAction SilentlyContinue  
+                $ManagedDevices = $TenantDevices | Select-Object -ExpandProperty 'Data' -ErrorAction SilentlyContinue | Where-Object {$ManagedDeviceIDs -contains $_.ID}  
+                $ManagedDevicesGroup = $ManagedDevices | Select-Object -ExpandProperty Attributes -ErrorAction SilentlyContinue | Group-Object -Property deviceType -AsHashTable -ErrorAction SilentlyContinue  
+                if ($ManagedDevicesGroup) {  
+                    Write-Output "Client: $($tenant.attributes.domainPrefix)"  
+                    foreach ($deviceType in $ManagedDevicesGroup.Keys) {  
+                        Write-Output "$deviceType,$($ManagedDevicesGroup.$deviceType.Count)"  
+                    }  
                 }  
             }  
         }  
-    }  
+
