@@ -36,6 +36,25 @@ Description: Loads previously exported settings.
 Options: None  
 
 # Functions by Endpoint
+## Billing
+### Get-AuvikBillingInfo
+Description: Returns Billing Information  
+
+    Options: [-Tenant|PrimaryTenant <tenantdomainname>]  
+        [-QueryTenant <tenantdomainname>] [-Descendants <all|children>]  
+        [-Date|FromDate <Datestamp for earliest record>]  
+        [-ToDate <Datestamp for latest record>]  
+        [-Daily <True|False>]  
+
+### Get-AuvikBillingDetails
+Description: Returns Billing Details
+
+    Options: [-Tenant|PrimaryTenant <tenantdomainname>]  
+        [-QueryTenant <tenantdomainname>] [-Descendants <all|children>]  
+        [-Date|FromDate <Datestamp for earliest record>]  
+        [-ToDate <Datestamp for latest record>]  
+        [-Daily <True|False>]  
+
 ## Component
 ### Get-AuvikComponentsInfo
 Description: Returns Component Information  
