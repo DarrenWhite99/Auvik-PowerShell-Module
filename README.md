@@ -36,6 +36,20 @@ Description: Loads previously exported settings.
 Options: None  
 
 # Functions by Endpoint
+## Alerts
+### Get-AuvikAlertsInfo
+Description: Returns Alerts History  
+
+    Options: [-ID <List of Alert IDs>]  
+    Options: [-Tenants <List of Tenant IDs>] [-Entities <List of Entity IDs>]  
+        [-AlertSpecificationID <Match for Alert Specification ID>]  
+        [-Severity <unknown|emergency|critical|warning|info>]  
+        [-Status <created|resolved|paused|unpaused>]  
+        [-Dismissed <True|False>]  
+        [-Dispatched <True|False>]  
+        [-DetectedAfter <Datestamp for earliest record>]  
+        [-DetectedBefore <Datestamp for latest record>]  
+
 ## Billing
 ### Get-AuvikBillingInfo
 Description: Returns Billing Information  
@@ -141,6 +155,12 @@ Description: Returns Interface Information
         [-AdminStatus <True|False|Null>]  
         [-OperationalStatus <online|offline|unreachable|testing|unknown|dormant|notPresent>]  
         [-ModifiedAfter <Datestamp for earliest record>]  
+
+## Meta Data
+### Get-AuvikMetaField
+Description: Returns Meta Data Field Information  
+
+    Options: -Endpoint <endpoint name> -Field <field name>  
 
 ## Network
 ### Get-AuvikNetworksInfo

@@ -30,7 +30,7 @@ function Confirm-AuvikAPICredential {
     $data = @{}
 
     if ($x_api_authorization) {
-        Write-Debug "Testing $x_api_authorization"
+        Write-Debug "Testing $($Auvik_Base_URI + $resource_uri) with $x_api_authorization"
         $x_api_authorization = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($x_api_authorization))
         $attempt=0
         do {

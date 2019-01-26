@@ -89,17 +89,14 @@ Process {
     foreach ($deviceId IN $Id) {
         $resource_uri = ('/v1/inventory/device/info/{0}' -f $deviceId)
 
-        if ($qparams.Count -gt 0) { $resource_uri += '?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') }
-
         $attempt=0
         do {
             $attempt+=1
             if ($attempt -gt 1) {Start-Sleep 2}
-            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)"
+            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
-                Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers `
-                            -ErrorAction SilentlyContinue
+                Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
             } catch [System.Net.WebException] { 
                 $_.Exception.Response 
             } catch {
@@ -194,17 +191,14 @@ Process {
     foreach ($deviceId IN $Id) {
         $resource_uri = ('/v1/inventory/device/detail/{0}' -f $deviceId)
 
-        if ($qparams.Count -gt 0) { $resource_uri += '?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') }
-
         $attempt=0
         do {
             $attempt+=1
             if ($attempt -gt 1) {Start-Sleep 2}
-            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)"
+            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
-                Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers `
-                    -ErrorAction SilentlyContinue
+                Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
             } catch [System.Net.WebException] { 
                 $_.Exception.Response 
             } catch {
@@ -280,17 +274,14 @@ Process {
     foreach ($deviceId IN $Id) {
         $resource_uri = ('/v1/inventory/device/detail/extended/{0}' -f $deviceId)
 
-        if ($qparams.Count -gt 0) { $resource_uri += '?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') }
-
         $attempt=0
         do {
             $attempt+=1
             if ($attempt -gt 1) {Start-Sleep 2}
-            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)"
+            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
-                Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers `
-                    -ErrorAction SilentlyContinue
+                Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
             } catch [System.Net.WebException] { 
                 $_.Exception.Response 
             } catch {

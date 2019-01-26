@@ -1,33 +1,37 @@
-function Get-AuvikInterfacesInfo {
+function Get-AuvikAlertsInfo {
     [CmdletBinding(DefaultParameterSetName = 'index')]
     Param (
         [Parameter(ParameterSetName = 'show')]
         [String[]]$Id,
  
         [Parameter(ParameterSetName = 'index')]
-        [String[]]$Devices = '',
+        [String]$AlertSpecificationID = '',
 
         [Parameter(ParameterSetName = 'index')]
-        [ValidateSet('ethernet', 'wifi', 'bluetooth', 'cdma', 'coax', 'cpu', `
-            'firewire', 'gsm', 'ieee8023AdLag', 'inferredWired', `
-            'inferredWireless', 'linkAggregation', 'loopback', 'modem', `
-            'wimax', 'optical', 'other', 'parallel', 'ppp', 'rs232', 'tunnel', `
-            'unknown', 'usb', 'virtualBridge', 'virtualNic', 'virtualSwitch', `
-            'vlan', 'distributedVirtualSwitch', 'interface')]
-        [String]$InterfaceType = '',
+        [ValidateSet('unknown','emergency','critical','warning','info')]
+        [String]$Severity = '',
 
         [Parameter(ParameterSetName = 'index')]
-        [ValidateSet('online', 'offline', 'unreachable', 'testing', 'unknown', 'dormant', 'notPresent')]
-        [String]$OperationalStatus = '',
+        [ValidateSet('created', 'resolved', 'paused', 'unpaused')]
+        [String]$Status = '',
 
         [Parameter(ParameterSetName = 'index')]
-        [datetime]$ModifiedAfter,
+        [String[]]$Entities = '',
 
         [Parameter(ParameterSetName = 'index')]
-        [String[]]$Tenants = '',
+        [Nullable[Boolean]]$Dismissed,
 
         [Parameter(ParameterSetName = 'index')]
-        [Nullable[Boolean]]$AdminStatus
+        [Nullable[Boolean]]$Dispatched,
+
+        [Parameter(ParameterSetName = 'index')]
+        [datetime]$DetectedAfter,
+
+        [Parameter(ParameterSetName = 'index')]
+        [datetime]$DetectedBefore,
+
+        [Parameter(ParameterSetName = 'index')]
+        [String[]]$Tenants = ''
 
     )
 
@@ -44,37 +48,50 @@ Process {
         if ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
-        if ($InterfaceType) {
-            $qparams += @{'filter[interfaceType]' = $InterfaceType}
+        if ($AlertSpecificationID) {
+            $qparams += @{'filter[alertSpecificationId]' = $AlertSpecificationID}
         }
-        if ($OperationalStatus) {
-            $qparams += @{'filter[operationalStatus]' = $OperationalStatus}
+        if ($Severity) {
+            $qparams += @{'filter[severity]' = $Severity}
         }
-        if ($Null -ne $AdminStatus) {
-            if ($AdminStatus -eq $True) {
-                $qparams += @{'filter[adminStatus]' = 'true'}
+        if ($Status) {
+            $qparams += @{'filter[status]' = $Status}
+        }
+        if ($Null -ne $Dismissed) {
+            if ($Dismissed -eq $True) {
+                $qparams += @{'filter[dismissed]' = 'true'}
             } else {
-                $qparams += @{'filter[adminStatus]' = 'false'}
+                $qparams += @{'filter[dismissed]' = 'false'}
             }
         }
-        if ($ModifiedAfter) {
-            $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
+        if ($Null -ne $Dispatched) {
+            if ($Dispatched -eq $True) {
+                $qparams += @{'filter[dispatched]' = 'true'}
+            } else {
+                $qparams += @{'filter[dispatched]' = 'false'}
+            }
+        }
+        if ($DetectedAfter) {
+            $qparams += @{'filter[detectedTimeAfter]' = $DetectedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
+        }
+        if ($DetectedBefore) {
+            $qparams += @{'filter[detectedTimeBefore]' = $DetectedBefore.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
     else {
         #Parameter set "Show" is selected
-        $Devices = @('')
+        $Entities = @('')
     }
 
-    foreach ($interfaceId IN $Id) {
-        foreach ($DeviceId IN $Devices) {
-            $resource_uri = ('/v1/inventory/interface/info')
-            if (!($Null -eq $interfaceId) -and $interfaceId -gt '') {
-                $resource_uri = ('/v1/inventory/interface/info/{0}' -f $interfaceId)
-            } elseif (!($Null -eq $DeviceId) -and $DeviceId -gt '') {
-                $qparams['filter[parentDevice]'] = $DeviceId
+    foreach ($alertId IN $Id) {
+        foreach ($entityID IN $Entities) {
+            $resource_uri = '/v1/alert/history/info'
+            if (!($Null -eq $alertId) -and $alertId -gt '') {
+                $resource_uri = ('/v1/alert/history/info/{0}' -f $alertId)
+            } elseif (!($Null -eq $entityID) -and $entityID -gt '') {
+                $qparams['filter[entityId]'] = $entityID
             } else {
-                $Null = $qparams.Remove('filter[parentDevice]')
+                $Null = $qparams.Remove('filter[entityId]')
             }
 
             $attempt=0
@@ -94,14 +111,13 @@ Process {
                 }
                 Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
             } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
-            $data += $rest_output | Where-Object {$_.Data.ID -gt ''}
+            $data += $rest_output
         }
     }
- }
+}
 
 End {
     return $data
 }
 
 }
-

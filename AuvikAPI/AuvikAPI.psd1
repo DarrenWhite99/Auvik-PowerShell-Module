@@ -71,6 +71,7 @@ PowerShellVersion = '3.0'
 NestedModules = 'Internal/BaseURI.ps1',
                 'Internal/APICredential.ps1',
                 'Internal/ModuleSettings.ps1',
+                'Resources/AlertHistory.ps1',
                 'Resources/Authentication.ps1',
                 'Resources/Billing.ps1',
                 'Resources/Component.ps1',
@@ -78,6 +79,7 @@ NestedModules = 'Internal/BaseURI.ps1',
                 'Resources/Device.ps1',
                 'Resources/Entity.ps1',
                 'Resources/Interface.ps1',
+                'Resources/MetaData.ps1',
                 'Resources/Network.ps1',
                 'Resources/Tenants.ps1'
 
@@ -94,6 +96,8 @@ FunctionsToExport = 'Add-AuvikAPICredential',
                     'Export-AuvikModuleSettings',
                     'Import-AuvikModuleSettings',
 
+                    'Get-AuvikAlertsInfo',
+
                     'Get-AuvikBillingInfo',
                     'Get-AuvikBillingDetails',
                     
@@ -109,6 +113,8 @@ FunctionsToExport = 'Add-AuvikAPICredential',
                     'Get-AuvikEntityNotes',
 
                     'Get-AuvikInterfacesInfo',
+
+                    'Get-AuvikMetaField',
 
                     'Get-AuvikNetworksInfo',
                     'Get-AuvikNetworksDetails',
