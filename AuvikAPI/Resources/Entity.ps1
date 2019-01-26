@@ -32,39 +32,39 @@ Begin {
 
 Process {
 
-    if ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
-        if ($Tenants) {
+        If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
-        if ($User) {
+        If ($User) {
             $qparams += @{'filter[user]' = $User}
         }
-        if ($Category) {
+        If ($Category) {
             $qparams += @{'filter[category]' = $Category}
         }
-        if ($Status) {
+        If ($Status) {
             $qparams += @{'filter[status]' = $Status}
         }
-        if ($ModifiedAfter) {
+        If ($ModifiedAfter) {
             $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
-    else {
+    Else {
         #Parameter set "Show" is selected
     }
 
-    foreach ($entityAuditId IN $Id) {
+    ForEach ($entityAuditId IN $Id) {
         $resource_uri = ('/v1/inventory/entity/audit')
-        if (!($Null -eq $entityAuditId) -and $entityAuditId -gt '') {
+        If (!($Null -eq $entityAuditId) -and $entityAuditId -gt '') {
             $resource_uri = ('/v1/inventory/entity/audit/{0}' -f $entityAuditId)
         }
 
         $attempt=0
-        do {
+        Do {
             $attempt+=1
-            if ($attempt -gt 1) {Start-Sleep 2}
-            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+            If ($attempt -gt 1) {Start-Sleep 2}
+            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                 Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
@@ -76,13 +76,13 @@ Process {
                 $Null = $AuvikAPI_Headers.Remove('Authorization')
             }
             Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
-        } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+        } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
         $data += $rest_output | Where-Object {$_.Data.ID -gt ''}
     }
  }
 
 End {
-    return $data
+    Return $data
 }
 
 }
@@ -123,45 +123,45 @@ Begin {
 
 Process {
 
-    if ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
-        if ($Tenants) {
+        If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
-        if ($EntityName) {
+        If ($EntityName) {
             $qparams += @{'filter[entityName]' = $EntityName}
         }
-        if ($Type) {
+        If ($Type) {
             $qparams += @{'filter[entityType]' = $Type}
         }
-        if ($User) {
+        If ($User) {
             $qparams += @{'filter[lastModifiedBy]' = $User}
         }
-        if ($ModifiedAfter) {
+        If ($ModifiedAfter) {
             $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
-    else {
+    Else {
         #Parameter set "Show" is selected
         $Entities = @('')
     }
 
-    foreach ($entityNoteId IN $Id) {
-        foreach ($entityID IN $Entities) {
+    ForEach ($entityNoteId IN $Id) {
+        ForEach ($entityID IN $Entities) {
             $resource_uri = ('/v1/inventory/entity/note')
-            if (!($Null -eq $entityNoteId) -and $entityNoteId -gt '') {
+            If (!($Null -eq $entityNoteId) -and $entityNoteId -gt '') {
                 $resource_uri = ('/v1/inventory/entity/note/{0}' -f $entityNoteId)
-            } elseif (!($Null -eq $entityID) -and $entityID -gt '') {
+            } ElseIf (!($Null -eq $entityID) -and $entityID -gt '') {
                 $qparams['filter[entityId]'] = $entityID
-            } else {
+            } Else {
                 $Null = $qparams.Remove('filter[entityId]')
             }
 
             $attempt=0
-            do {
+            Do {
                 $attempt+=1
-                if ($attempt -gt 1) {Start-Sleep 2}
-                Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+                If ($attempt -gt 1) {Start-Sleep 2}
+                Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
                 $rest_output = try {
                     $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                     Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
@@ -173,14 +173,14 @@ Process {
                     $Null = $AuvikAPI_Headers.Remove('Authorization')
                 }
                 Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
-            } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+            } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
             $data += $rest_output | Where-Object {$_.Data.ID -gt ''}
         }
     }
  }
 
 End {
-    return $data
+    Return $data
 }
 
 }

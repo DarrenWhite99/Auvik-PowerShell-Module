@@ -11,22 +11,22 @@ function Add-AuvikAPICredential {
         [string]$Api_Key
     )
 
-    if ($UserName) {
+    If ($UserName) {
         Set-Variable -Name "Auvik_User"  -Value $UserName -Option ReadOnly -Scope global -Force
     }
-    else {
+    Else {
         Write-Host "Please enter your Auvik User Email Address:"
         $UserName = Read-Host
 
         Set-Variable -Name "Auvik_User"  -Value $UserName -Option ReadOnly -Scope global -Force
     }
 
-	if ($Api_Key) {
+	If ($Api_Key) {
         $x_api_key = ConvertTo-SecureString $Api_Key -AsPlainText -Force 
 
         Set-Variable -Name "Auvik_API_Key"  -Value $x_api_key -Option ReadOnly -Scope global -Force
     }
-    else {
+    Else {
         Write-Host "Please enter your API key:"
         $x_api_key = Read-Host -AsSecureString
 
@@ -43,10 +43,10 @@ function Remove-AuvikAPICredential {
 
 function Get-AuvikAPICredential {
 
-    if($Auvik_API_Credential -eq $null) {
+    If ($Auvik_API_Credential -eq $null) {
         Write-Error "No API credentials exists. Please run Add-AuvikAPICredential to add one."
     }
-    else {
+    Else {
 		$Auvik_API_Credential
     }
 }

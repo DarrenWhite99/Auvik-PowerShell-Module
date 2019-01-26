@@ -43,62 +43,62 @@ Begin {
 }
 
 Process {
-    if ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
-        if ($Tenants) {
+        If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
-        if ($AlertSpecificationID) {
+        If ($AlertSpecificationID) {
             $qparams += @{'filter[alertSpecificationId]' = $AlertSpecificationID}
         }
-        if ($Severity) {
+        If ($Severity) {
             $qparams += @{'filter[severity]' = $Severity}
         }
-        if ($Status) {
+        If ($Status) {
             $qparams += @{'filter[status]' = $Status}
         }
-        if ($Null -ne $Dismissed) {
-            if ($Dismissed -eq $True) {
+        If ($Null -ne $Dismissed) {
+            If ($Dismissed -eq $True) {
                 $qparams += @{'filter[dismissed]' = 'true'}
-            } else {
+            } Else {
                 $qparams += @{'filter[dismissed]' = 'false'}
             }
         }
-        if ($Null -ne $Dispatched) {
-            if ($Dispatched -eq $True) {
+        If ($Null -ne $Dispatched) {
+            If ($Dispatched -eq $True) {
                 $qparams += @{'filter[dispatched]' = 'true'}
-            } else {
+            } Else {
                 $qparams += @{'filter[dispatched]' = 'false'}
             }
         }
-        if ($DetectedAfter) {
+        If ($DetectedAfter) {
             $qparams += @{'filter[detectedTimeAfter]' = $DetectedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
-        if ($DetectedBefore) {
+        If ($DetectedBefore) {
             $qparams += @{'filter[detectedTimeBefore]' = $DetectedBefore.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
-    else {
+    Else {
         #Parameter set "Show" is selected
         $Entities = @('')
     }
 
-    foreach ($alertId IN $Id) {
-        foreach ($entityID IN $Entities) {
+    ForEach ($alertId IN $Id) {
+        ForEach ($entityID IN $Entities) {
             $resource_uri = '/v1/alert/history/info'
-            if (!($Null -eq $alertId) -and $alertId -gt '') {
+            If (!($Null -eq $alertId) -and $alertId -gt '') {
                 $resource_uri = ('/v1/alert/history/info/{0}' -f $alertId)
-            } elseif (!($Null -eq $entityID) -and $entityID -gt '') {
+            } ElseIf (!($Null -eq $entityID) -and $entityID -gt '') {
                 $qparams['filter[entityId]'] = $entityID
-            } else {
+            } Else {
                 $Null = $qparams.Remove('filter[entityId]')
             }
 
             $attempt=0
-            do {
+            Do {
                 $attempt+=1
-                if ($attempt -gt 1) {Start-Sleep 2}
-                Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+                If ($attempt -gt 1) {Start-Sleep 2}
+                Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
                 $rest_output = try {
                     $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                     Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
@@ -110,14 +110,14 @@ Process {
                     $Null = $AuvikAPI_Headers.Remove('Authorization')
                 }
                 Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
-            } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+            } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
             $data += $rest_output
         }
     }
 }
 
 End {
-    return $data
+    Return $data
 }
 
 }

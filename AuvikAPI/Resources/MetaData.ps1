@@ -17,24 +17,24 @@ Begin {
 }
 
 Process {
-    if ($PSCmdlet.ParameterSetName -eq 'field') {
-        if ($Endpoint) {
+    If ($PSCmdlet.ParameterSetName -eq 'field') {
+        If ($Endpoint) {
             $qparams += @{'endpoint' = $Endpoint}
         }
-        if ($Field) {
+        If ($Field) {
             $qparams += @{'field' = $Field}
         }
     }
-    else {
+    Else {
     }
 
     $resource_uri = ('/v1/meta/field/info')
 
     $attempt=0
-    do {
+    Do {
         $attempt+=1
-        if ($attempt -gt 1) {Start-Sleep 2}
-        Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+        If ($attempt -gt 1) {Start-Sleep 2}
+        Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
         $rest_output = try {
             $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
             Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
@@ -46,12 +46,12 @@ Process {
             $Null = $AuvikAPI_Headers.Remove('Authorization')
         }
         Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
-    } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+    } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
     $data += $rest_output
 }
 
 End {
-    return $data
+    Return $data
 }
 
 }

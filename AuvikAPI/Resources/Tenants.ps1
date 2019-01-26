@@ -8,9 +8,9 @@ function Get-AuvikTenants {
     $x_api_authorization = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($x_api_authorization))
 
     $attempt=0
-    do {
+    Do {
         $attempt+=1
-        if ($attempt -gt 1) {Start-Sleep 2}
+        If ($attempt -gt 1) {Start-Sleep 2}
         Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)"
         $rest_output = try {
             $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
@@ -23,7 +23,7 @@ function Get-AuvikTenants {
         } finally {
             $Null = $AuvikAPI_Headers.Remove('Authorization')
         }
-    } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+    } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
     $data = $rest_output | Select-Object -ExpandProperty 'Data' -EA 0
-    return $data
+    Return $data
 }

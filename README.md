@@ -1,12 +1,17 @@
 # Auvik-PowerShell-Module
-PowerShell Wrapper for the Auvik API  
+PowerShell Wrapper for the [Auvik API](https://auvikapi.us1.my.auvik.com/docs)  
 
 # Base Module Functions
 ### Add-AuvikBaseURI
-Description: Set the URI for API access  
+Description: Set the URI for API access. Will set Base URI to default of https://auvikapi.us1.my.auvik.com if no option is provided.    
 
     Options: [-BaseURI <URL>]  
     Options: [-DC <US|EU>]  
+    Options: [-DC <US#|EU#>]  
+#### Example
+Set the Base URI to the US2 Datacenter 
+
+    Add-AuvikBaseURI -DC US2  
 
 ### Get-AuvikBaseURI
 Description: Returns the URI configured for the current session  
@@ -192,20 +197,20 @@ Options: None
 # Example
 Return all tenants. Return managed devices for each tenant and return device counts for each type of device.  
 
-        Import-Module AuvikAPI  
-        if (Confirm-AuvikAPICredential -Quiet) {  
-            $AuvikTenants = Get-AuvikTenants | Where-Object {$_.attributes.tenantType -eq 'client'}  
-            foreach ($tenant in $AuvikTenants) {  
-                $TenantDevices = Get-AuvikDevicesInfo -Tenant $tenant.ID -IncludeDetailFields manageStatus  
-                $ManagedDeviceIDs = $TenantDevices | Select-Object -ExpandProperty 'Included' -ErrorAction SilentlyContinue | Where-Object {$_.attributes.manageStatus -eq 'true'} | Select-Object -ExpandProperty 'ID' -ErrorAction SilentlyContinue  
-                $ManagedDevices = $TenantDevices | Select-Object -ExpandProperty 'Data' -ErrorAction SilentlyContinue | Where-Object {$ManagedDeviceIDs -contains $_.ID}  
-                $ManagedDevicesGroup = $ManagedDevices | Select-Object -ExpandProperty Attributes -ErrorAction SilentlyContinue | Group-Object -Property deviceType -AsHashTable -ErrorAction SilentlyContinue  
-                if ($ManagedDevicesGroup) {  
-                    Write-Output "Client: $($tenant.attributes.domainPrefix)"  
-                    foreach ($deviceType in $ManagedDevicesGroup.Keys) {  
-                        Write-Output "$deviceType,$($ManagedDevicesGroup.$deviceType.Count)"  
-                    }  
+    Import-Module AuvikAPI  
+    If (Confirm-AuvikAPICredential -Quiet) {  
+        $AuvikTenants = Get-AuvikTenants | Where-Object {$_.attributes.tenantType -eq 'client'}  
+        ForEach ($tenant in $AuvikTenants) {  
+            $TenantDevices = Get-AuvikDevicesInfo -Tenant $tenant.ID -IncludeDetailFields manageStatus  
+            $ManagedDeviceIDs = $TenantDevices | Select-Object -ExpandProperty 'Included' -ErrorAction SilentlyContinue | Where-Object {$_.attributes.manageStatus -eq 'true'} | Select-Object -ExpandProperty 'ID' -ErrorAction SilentlyContinue  
+            $ManagedDevices = $TenantDevices | Select-Object -ExpandProperty 'Data' -ErrorAction SilentlyContinue | Where-Object {$ManagedDeviceIDs -contains $_.ID}  
+            $ManagedDevicesGroup = $ManagedDevices | Select-Object -ExpandProperty Attributes -ErrorAction SilentlyContinue | Group-Object -Property deviceType -AsHashTable -ErrorAction SilentlyContinue  
+            If ($ManagedDevicesGroup) {  
+                Write-Output "Client: $($tenant.attributes.domainPrefix)"  
+                ForEach ($deviceType in $ManagedDevicesGroup.Keys) {  
+                    Write-Output "$deviceType,$($ManagedDevicesGroup.$deviceType.Count)"  
                 }  
             }  
         }  
+    }  
 

@@ -30,46 +30,46 @@ Begin {
 
 Process {
 
-    if ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
-        if ($Tenants) {
+        If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
-        if ($BackupTimeAfter) {
+        If ($BackupTimeAfter) {
             $qparams += @{'filter[backupTimeAfter]' = $BackupTimeAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
-        if ($BackupTimeBefore) {
+        If ($BackupTimeBefore) {
             $qparams += @{'filter[backupTimeBefore]' = $BackupTimeBefore.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
-        if ($Null -ne $IsRunning) {
-            if ($IsRunning -eq $True) {
+        If ($Null -ne $IsRunning) {
+            If ($IsRunning -eq $True) {
                 $qparams += @{'filter[isRunning]' = 'true'}
-            } else {
+            } Else {
                 $qparams += @{'filter[isRunning]' = 'false'}
             }
         }
     }
-    else {
+    Else {
         #Parameter set "Show" is selected
         $Devices = @('')
     }
 
-    foreach ($configId IN $Id) {
-        foreach ($DeviceId IN $Devices) {
+    ForEach ($configId IN $Id) {
+        ForEach ($DeviceId IN $Devices) {
             $resource_uri = ('/v1/inventory/configuration')
-            if (!($Null -eq $configID) -and $configId -gt '') {
+            If (!($Null -eq $configID) -and $configId -gt '') {
                 $resource_uri = ('/v1/inventory/configuration/{0}' -f $configId)
-            } elseif (!($Null -eq $DeviceId) -and $DeviceId -gt '') {
+            } ElseIf (!($Null -eq $DeviceId) -and $DeviceId -gt '') {
                 $qparams['filter[deviceId]'] = $DeviceId
-            } else {
+            } Else {
                 $Null = $qparams.Remove('filter[deviceId]')
             }
 
             $attempt=0
-            do {
+            Do {
                 $attempt+=1
-                if ($attempt -gt 1) {Start-Sleep 2}
-                Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+                If ($attempt -gt 1) {Start-Sleep 2}
+                Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
                 $rest_output = try {
                     $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                     Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
@@ -81,14 +81,14 @@ Process {
                     $Null = $AuvikAPI_Headers.Remove('Authorization')
                 }
                 Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
-            } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+            } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
             $data += $rest_output | Where-Object {$_.Data.ID -gt ''}
         }
     }
 }
 
 End {
-    return $data
+    Return $data
 }
 
 }

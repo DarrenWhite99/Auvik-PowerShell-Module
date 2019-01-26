@@ -54,46 +54,46 @@ Begin {
 }
 
 Process {
-    if ($IncludeDetailFields) {
+    If ($IncludeDetailFields) {
         $qparams += @{'include' = 'deviceDetail'; 'fields[deviceDetail]' = $IncludeDetailFields -join ','}
     }
 
-    if ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
-        if ($Tenants) {
+        If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
-        if ($DeviceType) {
+        If ($DeviceType) {
             $qparams += @{'filter[deviceType]' = $DeviceType}
         }
-        if ($Networks) {
+        If ($Networks) {
             $qparams += @{'filter[networks]' = $Networks -join ','}
         }
-        if ($MakeModel) {
+        If ($MakeModel) {
             $qparams += @{'filter[makeModel]' = "`"$MakeModel`""}
         }
-        if ($VendorName) {
+        If ($VendorName) {
             $qparams += @{'filter[vendorName]' = "`"$VendorName`""}
         }
-        if ($Status) {
+        If ($Status) {
             $qparams += @{'filter[onlineStatus]' = $Status}
         }
-        if ($ModifiedAfter) {
+        If ($ModifiedAfter) {
             $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
-    else {
+    Else {
         #Parameter set "Show" is selected
     }
 
-    foreach ($deviceId IN $Id) {
+    ForEach ($deviceId IN $Id) {
         $resource_uri = ('/v1/inventory/device/info/{0}' -f $deviceId)
 
         $attempt=0
-        do {
+        Do {
             $attempt+=1
-            if ($attempt -gt 1) {Start-Sleep 2}
-            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+            If ($attempt -gt 1) {Start-Sleep 2}
+            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                 Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
@@ -105,13 +105,13 @@ Process {
                 $Null = $AuvikAPI_Headers.Remove('Authorization')
             }
             Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
-        } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+        } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
         $data += $rest_output
     }
 }
 
 End {
-    return $data
+    Return $data
 }
 
 }
@@ -159,43 +159,43 @@ Begin {
 
 Process {    
 
-    if ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
-        if ($Tenants) {
+        If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
-        if ($SNMPDiscovery) {
+        If ($SNMPDiscovery) {
             $qparams += @{'filter[discoverySNMP]' = $SNMPDiscovery}
         }
-        if ($WMIDiscovery) {
+        If ($WMIDiscovery) {
             $qparams += @{'filter[discoveryWMI]' = $WMIDiscovery}
         }
-        if ($LoginDiscovery) {
+        If ($LoginDiscovery) {
             $qparams += @{'filter[discoveryLogin]' = $LoginDiscovery}
         }
-        if ($VMWareDiscovery) {
+        If ($VMWareDiscovery) {
             $qparams += @{'filter[discoveryVMWare]' = $VMWareDiscovery}
         }
-        if ($Null -ne $ManagedStatus) {
-            if ($ManagedStatus -eq $True) {
+        If ($Null -ne $ManagedStatus) {
+            If ($ManagedStatus -eq $True) {
                 $qparams += @{'filter[managedStatus]' = 'true'}
-            } else {
+            } Else {
                 $qparams += @{'filter[managedStatus]' = 'false'}
             }
         }
     }
-    else {
+    Else {
         #Parameter set "Show" is selected
     }
 
-    foreach ($deviceId IN $Id) {
+    ForEach ($deviceId IN $Id) {
         $resource_uri = ('/v1/inventory/device/detail/{0}' -f $deviceId)
 
         $attempt=0
-        do {
+        Do {
             $attempt+=1
-            if ($attempt -gt 1) {Start-Sleep 2}
-            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+            If ($attempt -gt 1) {Start-Sleep 2}
+            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                 Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
@@ -207,13 +207,13 @@ Process {
                 $Null = $AuvikAPI_Headers.Remove('Authorization')
             }
             Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
-        } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+        } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
         $data += $rest_output
     }
 }
 
 End {
-    return $data
+    Return $data
 }
 
 }
@@ -255,30 +255,30 @@ Begin {
 
 Process {    
 
-    if ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
-        if ($Tenants) {
+        If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
-        if ($DeviceType) {
+        If ($DeviceType) {
             $qparams += @{'filter[deviceType]' = $DeviceType}
         }
-        if ($ModifiedAfter) {
+        If ($ModifiedAfter) {
             $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
-    else {
+    Else {
         #Parameter set "Show" is selected
     }
 
-    foreach ($deviceId IN $Id) {
+    ForEach ($deviceId IN $Id) {
         $resource_uri = ('/v1/inventory/device/detail/extended/{0}' -f $deviceId)
 
         $attempt=0
-        do {
+        Do {
             $attempt+=1
-            if ($attempt -gt 1) {Start-Sleep 2}
-            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+            If ($attempt -gt 1) {Start-Sleep 2}
+            Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                 Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
@@ -290,13 +290,13 @@ Process {
                 $Null = $AuvikAPI_Headers.Remove('Authorization')
             }
             Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
-        } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+        } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
         $data += $rest_output
     }
 }
 
 End {
-    return $data
+    Return $data
 }
 
 }

@@ -36,46 +36,46 @@ Begin {
 }
 
 Process {
-    if ($IncludeDetailFields) {
+    If ($IncludeDetailFields) {
         $qparams += @{'include' = 'networkDetail'; 'fields[networkDetail]' = $IncludeDetailFields -join ','}
     }
 
-    if ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
-        if ($Tenants) {
+        If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
-        if ($NetworkType) {
+        If ($NetworkType) {
             $qparams += @{'filter[networkType]' = $NetworkType}
         }
-        if ($ScanStatus) {
+        If ($ScanStatus) {
             $qparams += @{'filter[scanStatus]' = $ScanStatus}
         }
-        if ($ModifiedAfter) {
+        If ($ModifiedAfter) {
             $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
-    else {
+    Else {
         #Parameter set "Show" is selected
         $Devices = @('')
     }
 
-    foreach ($networkId IN $Id) {
-        foreach ($DeviceId IN $Devices) {
+    ForEach ($networkId IN $Id) {
+        ForEach ($DeviceId IN $Devices) {
             $resource_uri = ('/v1/inventory/network/info')
-            if (!($Null -eq $networkId) -and $networkId -gt '') {
+            If (!($Null -eq $networkId) -and $networkId -gt '') {
                 $resource_uri = ('/v1/inventory/network/info/{0}' -f $networkId)
-            } elseif (!($Null -eq $DeviceId) -and $DeviceId -gt '') {
+            } ElseIf (!($Null -eq $DeviceId) -and $DeviceId -gt '') {
                 $qparams['filter[devices]'] = $DeviceId
-            } else {
+            } Else {
                 $Null = $qparams.Remove('filter[devices]')
             }
 
             $attempt=0
-            do {
+            Do {
                 $attempt+=1
-                if ($attempt -gt 1) {Start-Sleep 2}
-                Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+                If ($attempt -gt 1) {Start-Sleep 2}
+                Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
                 $rest_output = try {
                     $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                     Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
@@ -87,14 +87,14 @@ Process {
                     $Null = $AuvikAPI_Headers.Remove('Authorization')
                 }
                 Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
-            } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+            } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
             $data += $rest_output | Where-Object {$_.Data.ID -gt ''}
         }
     }
  }
 
 End {
-    return $data
+    Return $data
 }
 
 }
@@ -136,45 +136,45 @@ Begin {
 }
 
 Process {
-    if ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
-        if ($Tenants) {
+        If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
         }
-        if ($NetworkType) {
+        If ($NetworkType) {
             $qparams += @{'filter[networkType]' = $NetworkType}
         }
-        if ($ScanStatus) {
+        If ($ScanStatus) {
             $qparams += @{'filter[scanStatus]' = $ScanStatus}
         }
-        if ($Scope) {
+        If ($Scope) {
             $qparams += @{'filter[scope]' = $Scope}
         }
-        if ($ModifiedAfter) {
+        If ($ModifiedAfter) {
             $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
     }
-    else {
+    Else {
         #Parameter set "Show" is selected
         $Devices = @('')
     }
 
-    foreach ($networkId IN $Id) {
-        foreach ($DeviceId IN $Devices) {
+    ForEach ($networkId IN $Id) {
+        ForEach ($DeviceId IN $Devices) {
             $resource_uri = ('/v1/inventory/network/detail')
-            if (!($Null -eq $networkId) -and $networkId -gt '') {
+            If (!($Null -eq $networkId) -and $networkId -gt '') {
                 $resource_uri = ('/v1/inventory/network/detail/{0}' -f $networkId)
-            } elseif (!($Null -eq $DeviceId) -and $DeviceId -gt '') {
+            } ElseIf (!($Null -eq $DeviceId) -and $DeviceId -gt '') {
                 $qparams['filter[devices]'] = $DeviceId
-            } else {
+            } Else {
                 $Null = $qparams.Remove('filter[devices]')
             }
 
             $attempt=0
-            do {
+            Do {
                 $attempt+=1
-                if ($attempt -gt 1) {Start-Sleep 2}
-                Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(if ($qparams.Count -gt 0) { $resource_uri += '?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+                If ($attempt -gt 1) {Start-Sleep 2}
+                Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) { $resource_uri += '?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
                 $rest_output = try {
                     $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                     Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
@@ -186,14 +186,14 @@ Process {
                     $Null = $AuvikAPI_Headers.Remove('Authorization')
                 }
                 Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
-            } until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+            } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
             $data += $rest_output | Where-Object {$_.Data.ID -gt ''}
         }
     }
  }
 
 End {
-    return $data
+    Return $data
 }
 
 }

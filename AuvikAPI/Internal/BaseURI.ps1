@@ -1,26 +1,30 @@
 function Add-AuvikBaseURI {
-    [cmdletbinding()]
+    [CmdletBinding(DefaultParameterSetName = 'uri')]
     Param (
-        [parameter(ValueFromPipeline)]
-        [Alias('Email')]
+        [parameter(ParameterSetName = 'uri',ValueFromPipeline,Position=1)]
         [string]$BaseURI = 'https://auvikapi.us1.my.auvik.com',
 
+        [Parameter(ParameterSetName = 'datacenter')]
         [Alias('locale','dc')]
-        [ValidateSet( 'US', 'EU')]
-        [String]$data_center = ''
+        [ValidatePattern("(US|EU)\d?")]
+        [String]$data_center
     )
 
-    # Trim superflous forward slash from address (if applicable)
-    if($BaseURI[$BaseURI.Length-1] -eq "/") {
-        $BaseURI = $BaseURI.Substring(0,$BaseURI.Length-1)
+    If ($PSCmdlet.ParameterSetName -eq 'uri') {
+        # Trim superflous forward slash from address (if applicable)
+        If ($BaseURI[$BaseURI.Length-1] -eq "/") {
+            $BaseURI = $BaseURI.Substring(0,$BaseURI.Length-1)
+        }
+    } ElseIf ($PSCmdlet.ParameterSetName -eq 'datacenter') {
+        Write-Verbose "Evaluating Datacenter parameter `"$($data_center)`""
+        # Assume DataCenter #1 if not specified
+        switch -regex ($data_center) {
+            '^US$' {$BaseURI = 'https://auvikapi.us1.my.auvik.com'; Break}
+            '^EU$' {$BaseURI = 'https://auvikapi.eu1.my.auvik.com'; Break}
+            Default {$BaseURI = "https://auvikapi.$($data_center.ToLower()).my.auvik.com"}
+        }
     }
-
-    switch ($data_center) {
-        'US' {$BaseURI = 'https://auvikapi.us1.my.auvik.com'}
-        'EU' {$BaseURI = 'https://auvikapi.eu1.my.auvik.com'}
-        Default {}
-    }
-
+    Write-Verbose "Assigning Auvik_Base_URI=`"$($BaseURI)`""
     Set-Variable -Name "Auvik_Base_URI" -Value $BaseURI -Option ReadOnly -Scope global -Force
 }
 
@@ -29,7 +33,7 @@ function Remove-AuvikBaseURI {
 }
 
 function Get-AuvikBaseURI {
-    return $Auvik_Base_URI
+    Return $Auvik_Base_URI
 }
 
 New-Alias -Name Set-AuvikBaseURI -Value Add-AuvikBaseURI
