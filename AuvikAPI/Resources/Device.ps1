@@ -87,7 +87,10 @@ Process {
     }
 
     ForEach ($deviceId IN $Id) {
-        $resource_uri = ('/v1/inventory/device/info/{0}' -f $deviceId)
+        $resource_uri = ('/v1/inventory/device/info')
+        If (!($Null -eq $deviceId) -and $deviceId -gt '') {
+            $resource_uri = ('/v1/inventory/device/info/{0}' -f $deviceId)
+        }
 
         $attempt=0
         Do {
@@ -189,7 +192,10 @@ Process {
     }
 
     ForEach ($deviceId IN $Id) {
-        $resource_uri = ('/v1/inventory/device/detail/{0}' -f $deviceId)
+        $resource_uri = ('/v1/inventory/device/detail')
+        If (!($Null -eq $deviceId) -and $deviceId -gt '') {
+            $resource_uri = ('/v1/inventory/device/detail/{0}' -f $deviceId)
+        }
 
         $attempt=0
         Do {
@@ -272,7 +278,10 @@ Process {
     }
 
     ForEach ($deviceId IN $Id) {
-        $resource_uri = ('/v1/inventory/device/detail/extended/{0}' -f $deviceId)
+        $resource_uri = ('/v1/inventory/device/detail/extended')
+        If (!($Null -eq $deviceId) -and $deviceId -gt '') {
+            $resource_uri = ('/v1/inventory/device/detail/extended/{0}' -f $deviceId)
+        }
 
         $attempt=0
         Do {
