@@ -1,10 +1,6 @@
 function Get-AuvikDevicesInfo {
     [CmdletBinding(DefaultParameterSetName = 'index-after')]
     Param (
-        [Parameter(ParameterSetName = 'show-after')]
-        [Parameter(ParameterSetName = 'show-before')]
-        [String[]]$Id,
-
         [Parameter(ParameterSetName = 'index-after')]
         [Parameter(ParameterSetName = 'index-before')]
         [String[]]$Networks = '',
@@ -45,6 +41,10 @@ function Get-AuvikDevicesInfo {
         [Parameter(ParameterSetName = 'index-after')]
         [Parameter(ParameterSetName = 'index-before')]
         [String[]]$Tenants = '',
+
+        [Parameter(ParameterSetName = 'show-after')]
+        [Parameter(ParameterSetName = 'show-before')]
+        [String[]]$Id,
 
         [ValidateSet('discoveryStatus', 'components', 'connectedDevices', `
             'configurations', 'manageStatus', 'interfaces')]
