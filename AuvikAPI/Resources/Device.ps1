@@ -1,12 +1,13 @@
 function Get-AuvikDevicesInfo {
-    [CmdletBinding(DefaultParameterSetName = 'index-after')]
+    [CmdletBinding(DefaultParameterSetName = 'index')]
     Param (
-        [Parameter(ParameterSetName = 'index-after')]
-        [Parameter(ParameterSetName = 'index-before')]
+        [Parameter(ParameterSetName = 'show')]
+        [String[]]$Id,
+
+        [Parameter(ParameterSetName = 'index')]
         [String[]]$Networks = '',
 
-        [Parameter(ParameterSetName = 'index-after')]
-        [Parameter(ParameterSetName = 'index-before')]
+        [Parameter(ParameterSetName = 'index')]
         [ValidateSet('unknown', 'switch', 'l3Switch', 'router', `
             'accessPoint', 'firewall', 'workstation', 'server', 'storage', `
             'printer', 'copier', 'hypervisor', 'multimedia', 'phone', `
@@ -20,31 +21,22 @@ function Get-AuvikDevicesInfo {
             'ipmi', 'thinAccessPoint', 'thinClient')]
         [String]$DeviceType = '',
 
-        [Parameter(ParameterSetName = 'index-after')]
-        [Parameter(ParameterSetName = 'index-before')]
+        [Parameter(ParameterSetName = 'index')]
         [String]$MakeModel = '',
 
-        [Parameter(ParameterSetName = 'index-after')]
-        [Parameter(ParameterSetName = 'index-before')]
+        [Parameter(ParameterSetName = 'index')]
         [String]$VendorName = '',
 
-        [Parameter(ParameterSetName = 'index-after')]
-        [Parameter(ParameterSetName = 'index-before')]
+        [Parameter(ParameterSetName = 'index')]
         [ValidateSet('online', 'offline', 'unreachable', 'testing', `
             'unknown', 'dormant', 'notPresent', 'lowerLayerDown')]
         [String]$Status = '',
 
-        [Parameter(ParameterSetName = 'index-after')]
-        [Parameter(ParameterSetName = 'index-before')]
+        [Parameter(ParameterSetName = 'index')]
         [datetime]$ModifiedAfter,
 
-        [Parameter(ParameterSetName = 'index-after')]
-        [Parameter(ParameterSetName = 'index-before')]
+        [Parameter(ParameterSetName = 'index')]
         [String[]]$Tenants = '',
-
-        [Parameter(ParameterSetName = 'show-after')]
-        [Parameter(ParameterSetName = 'show-before')]
-        [String[]]$Id,
 
         [ValidateSet('discoveryStatus', 'components', 'connectedDevices', `
             'configurations', 'manageStatus', 'interfaces')]
@@ -52,14 +44,12 @@ function Get-AuvikDevicesInfo {
 
         # The cursor ID after which device records will be returned as a page, available in the meta property.
         # Use the Limit parameter to control the size of the page returned.
-        [Parameter(ParameterSetName = 'index-after')]
-        [Parameter(ParameterSetName = 'show-after')]
+        [Parameter(ParameterSetName = 'index')]
         [String]$After,
 
         # The cursor ID before which device records will be returned as a page, available in the meta property.
         # Use the Limit parameter to control the size of the page returned.
-        [Parameter(ParameterSetName = 'index-before')]
-        [Parameter(ParameterSetName = 'show-before')]
+        [Parameter(ParameterSetName = 'index')]
         [String]$Before,
 
         # Controls how many devices are returned. If unspecified, the maximum number of devices returned is 100.
@@ -80,7 +70,7 @@ Process {
         $qparams += @{'include' = 'deviceDetail'; 'fields[deviceDetail]' = $IncludeDetailFields -join ','}
     }
 
-    If ($PSCmdlet.ParameterSetName -like 'index-*') {
+    If ($PSCmdlet.ParameterSetName -like 'index') {
         $Id = @('')
         If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
@@ -103,23 +93,22 @@ Process {
         If ($ModifiedAfter) {
             $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
+        If ($After) {
+            $qparams += @{'page[after]' = $After}
+            If ($Limit) {
+                $qparams += @{'page[first]' = $Limit.ToString()}
+            }
+        } ElseIf ($Before) {
+            $qparams += @{'page[before]' = $Before}
+            If ($Limit) {
+                $qparams += @{'page[last]' = $Limit.ToString()}
+            }
+        } ElseIf ($Limit) {
+            $qparams += @{'page[first]' = $Limit.ToString()}
+        }
     }
     Else {
         #Parameter set "Show" is selected
-    }
-
-    If ($After) {
-        $qparams += @{'page[after]' = $After}
-        If ($Limit) {
-            $qparams += @{'page[first]' = $Limit.ToString()}
-        }
-    } ElseIf ($Before) {
-        $qparams += @{'page[before]' = $Before}
-        If ($Limit) {
-            $qparams += @{'page[last]' = $Limit.ToString()}
-        }
-    } ElseIf ($Limit) {
-        $qparams += @{'page[first]' = $Limit.ToString()}
     }
 
     ForEach ($deviceId IN $Id) {
