@@ -184,7 +184,22 @@ function Get-AuvikDevicesDetails {
         [String[]]$Tenants = '',
 
         [Parameter(ParameterSetName = 'index')]
-        [Nullable[Boolean]]$ManagedStatus
+        [Nullable[Boolean]]$ManagedStatus,
+
+        # The cursor ID after which device records will be returned as a page, available in the meta property.
+        # Use the Limit parameter to control the size of the page returned.
+        [Parameter(ParameterSetName = 'index')]
+        [String]$After,
+
+        # The cursor ID before which device records will be returned as a page, available in the meta property.
+        # Use the Limit parameter to control the size of the page returned.
+        [Parameter(ParameterSetName = 'index')]
+        [String]$Before,
+
+        # Controls how many devices are returned. If unspecified, the maximum number of devices returned is 100.
+        # Can be supplied with the After or Before parameters, or by itself to generate an initial page of results.
+        [ValidateRange(1, 1000)]
+        [Int] $Limit
     )
 
 Begin {
@@ -220,6 +235,19 @@ Process {
                 $qparams += @{'filter[managedStatus]' = 'false'}
             }
         }
+        If ($After) {
+            $qparams += @{'page[after]' = $After}
+            If ($Limit) {
+                $qparams += @{'page[first]' = $Limit.ToString()}
+            }
+        } ElseIf ($Before) {
+            $qparams += @{'page[before]' = $Before}
+            If ($Limit) {
+                $qparams += @{'page[last]' = $Limit.ToString()}
+            }
+        } ElseIf ($Limit) {
+            $qparams += @{'page[first]' = $Limit.ToString()}
+        }
     }
     Else {
         #Parameter set "Show" is selected
@@ -248,6 +276,15 @@ Process {
             }
             Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
         } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+
+        If ($rest_output.links.next) {
+            $null = $rest_output.links.next -match '%5Bafter%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'nextCursor' -Value $Matches[1]
+        }
+        If ($rest_output.links.prev) {
+            $null = $rest_output.links.prev -match '%5Bbefore%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'prevCursor' -Value $Matches[1]
+        }
         $data += $rest_output
     }
 }
@@ -282,7 +319,22 @@ function Get-AuvikDevicesExtendedDetails {
         [datetime]$ModifiedAfter,
 
         [Parameter(ParameterSetName = 'index')]
-        [String[]]$Tenants = ''
+        [String[]]$Tenants = '',
+
+        # The cursor ID after which device records will be returned as a page, available in the meta property.
+        # Use the Limit parameter to control the size of the page returned.
+        [Parameter(ParameterSetName = 'index')]
+        [String]$After,
+
+        # The cursor ID before which device records will be returned as a page, available in the meta property.
+        # Use the Limit parameter to control the size of the page returned.
+        [Parameter(ParameterSetName = 'index')]
+        [String]$Before,
+
+        # Controls how many devices are returned. If unspecified, the maximum number of devices returned is 100.
+        # Can be supplied with the After or Before parameters, or by itself to generate an initial page of results.
+        [ValidateRange(1, 1000)]
+        [Int] $Limit
 
     )
 
@@ -305,6 +357,19 @@ Process {
         }
         If ($ModifiedAfter) {
             $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
+        }
+        If ($After) {
+            $qparams += @{'page[after]' = $After}
+            If ($Limit) {
+                $qparams += @{'page[first]' = $Limit.ToString()}
+            }
+        } ElseIf ($Before) {
+            $qparams += @{'page[before]' = $Before}
+            If ($Limit) {
+                $qparams += @{'page[last]' = $Limit.ToString()}
+            }
+        } ElseIf ($Limit) {
+            $qparams += @{'page[first]' = $Limit.ToString()}
         }
     }
     Else {
@@ -334,6 +399,15 @@ Process {
             }
             Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
         } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+
+        If ($rest_output.links.next) {
+            $null = $rest_output.links.next -match '%5Bafter%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'nextCursor' -Value $Matches[1]
+        }
+        If ($rest_output.links.prev) {
+            $null = $rest_output.links.prev -match '%5Bbefore%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'prevCursor' -Value $Matches[1]
+        }
         $data += $rest_output
     }
 }
