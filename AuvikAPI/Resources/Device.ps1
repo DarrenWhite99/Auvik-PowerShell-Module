@@ -1,13 +1,16 @@
 function Get-AuvikDevicesInfo {
-    [CmdletBinding(DefaultParameterSetName = 'index')]
+    [CmdletBinding(DefaultParameterSetName = 'index-after')]
     Param (
-        [Parameter(ParameterSetName = 'show')]
+        [Parameter(ParameterSetName = 'show-after')]
+        [Parameter(ParameterSetName = 'show-before')]
         [String[]]$Id,
 
-        [Parameter(ParameterSetName = 'index')]
+        [Parameter(ParameterSetName = 'index-after')]
+        [Parameter(ParameterSetName = 'index-before')]
         [String[]]$Networks = '',
 
-        [Parameter(ParameterSetName = 'index')]
+        [Parameter(ParameterSetName = 'index-after')]
+        [Parameter(ParameterSetName = 'index-before')]
         [ValidateSet('unknown', 'switch', 'l3Switch', 'router', `
             'accessPoint', 'firewall', 'workstation', 'server', 'storage', `
             'printer', 'copier', 'hypervisor', 'multimedia', 'phone', `
@@ -21,29 +24,42 @@ function Get-AuvikDevicesInfo {
             'ipmi', 'thinAccessPoint', 'thinClient')]
         [String]$DeviceType = '',
 
-        [Parameter(ParameterSetName = 'index')]
+        [Parameter(ParameterSetName = 'index-after')]
+        [Parameter(ParameterSetName = 'index-before')]
         [String]$MakeModel = '',
 
-        [Parameter(ParameterSetName = 'index')]
+        [Parameter(ParameterSetName = 'index-after')]
+        [Parameter(ParameterSetName = 'index-before')]
         [String]$VendorName = '',
 
-        [Parameter(ParameterSetName = 'index')]
+        [Parameter(ParameterSetName = 'index-after')]
+        [Parameter(ParameterSetName = 'index-before')]
         [ValidateSet('online', 'offline', 'unreachable', 'testing', `
             'unknown', 'dormant', 'notPresent', 'lowerLayerDown')]
         [String]$Status = '',
 
-        [Parameter(ParameterSetName = 'index')]
+        [Parameter(ParameterSetName = 'index-after')]
+        [Parameter(ParameterSetName = 'index-before')]
         [datetime]$ModifiedAfter,
 
-        [Parameter(ParameterSetName = 'index')]
+        [Parameter(ParameterSetName = 'index-after')]
+        [Parameter(ParameterSetName = 'index-before')]
         [String[]]$Tenants = '',
 
-        [Parameter(ParameterSetName = 'show')]
-        [Parameter(ParameterSetName = 'index')]
         [ValidateSet('discoveryStatus', 'components', 'connectedDevices', `
             'configurations', 'manageStatus', 'interfaces')]
-        [String[]]$IncludeDetailFields = ''
+        [String[]]$IncludeDetailFields = '',
 
+        [Parameter(ParameterSetName = 'index-after')]
+        [Parameter(ParameterSetName = 'show-after')]
+        [String]$After,
+
+        [Parameter(ParameterSetName = 'index-before')]
+        [Parameter(ParameterSetName = 'show-before')]
+        [String]$Before,
+
+        [ValidateRange(1, 1000)]
+        [Int] $Limit
     )
 
 Begin {
