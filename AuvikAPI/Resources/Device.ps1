@@ -50,13 +50,13 @@ function Get-AuvikDevicesInfo {
             'configurations', 'manageStatus', 'interfaces')]
         [String[]]$IncludeDetailFields = '',
 
-        # The ID of a device after which records will be returned as a page.
+        # The cursor ID after which device records will be returned as a page, available in the meta property.
         # Use the Limit parameter to control the size of the page returned.
         [Parameter(ParameterSetName = 'index-after')]
         [Parameter(ParameterSetName = 'show-after')]
         [String]$After,
 
-        # The ID of a device before which records will be returned as a page.
+        # The cursor ID before which device records will be returned as a page, available in the meta property.
         # Use the Limit parameter to control the size of the page returned.
         [Parameter(ParameterSetName = 'index-before')]
         [Parameter(ParameterSetName = 'show-before')]
@@ -80,7 +80,7 @@ Process {
         $qparams += @{'include' = 'deviceDetail'; 'fields[deviceDetail]' = $IncludeDetailFields -join ','}
     }
 
-    If ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -like 'index-*') {
         $Id = @('')
         If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
@@ -145,6 +145,15 @@ Process {
             }
             Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
         } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+
+        If ($rest_output.links.next) {
+            $null = $rest_output.links.next -match '%5Bafter%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'nextCursor' -Value $Matches[1]
+        }
+        If ($rest_output.links.prev) {
+            $null = $rest_output.links.prev -match '%5Bbefore%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'prevCursor' -Value $Matches[1]
+        }
         $data += $rest_output
     }
 }
