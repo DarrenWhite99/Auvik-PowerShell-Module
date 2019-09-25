@@ -50,14 +50,20 @@ function Get-AuvikDevicesInfo {
             'configurations', 'manageStatus', 'interfaces')]
         [String[]]$IncludeDetailFields = '',
 
+        # The ID of a device after which records will be returned as a page.
+        # Use the Limit parameter to control the size of the page returned.
         [Parameter(ParameterSetName = 'index-after')]
         [Parameter(ParameterSetName = 'show-after')]
         [String]$After,
 
+        # The ID of a device before which records will be returned as a page.
+        # Use the Limit parameter to control the size of the page returned.
         [Parameter(ParameterSetName = 'index-before')]
         [Parameter(ParameterSetName = 'show-before')]
         [String]$Before,
 
+        # Controls how many devices are returned. If unspecified, the maximum number of devices returned is 100.
+        # Can be supplied with the After or Before parameters, or by itself to generate an initial page of results.
         [ValidateRange(1, 1000)]
         [Int] $Limit
     )
@@ -100,6 +106,20 @@ Process {
     }
     Else {
         #Parameter set "Show" is selected
+    }
+
+    If ($After) {
+        $qparams += @{'page[after]' = $After}
+        If ($Limit) {
+            $qparams += @{'page[first]' = $Limit.ToString()}
+        }
+    } ElseIf ($Before) {
+        $qparams += @{'page[before]' = $Before}
+        If ($Limit) {
+            $qparams += @{'page[last]' = $Limit.ToString()}
+        }
+    } ElseIf ($Limit) {
+        $qparams += @{'page[first]' = $Limit.ToString()}
     }
 
     ForEach ($deviceId IN $Id) {
