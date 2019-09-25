@@ -3,7 +3,7 @@ function Get-AuvikDevicesInfo {
     Param (
         [Parameter(ParameterSetName = 'show')]
         [String[]]$Id,
- 
+
         [Parameter(ParameterSetName = 'index')]
         [String[]]$Networks = '',
 
@@ -100,8 +100,8 @@ Process {
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                 Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
-            } catch [System.Net.WebException] { 
-                $_.Exception.Response 
+            } catch [System.Net.WebException] {
+                $_.Exception.Response
             } catch {
                 Write-Error $_
             } finally {
@@ -125,7 +125,7 @@ function Get-AuvikDevicesDetails {
     Param (
         [Parameter(ParameterSetName = 'show')]
         [String[]]$Id,
- 
+
         [Parameter(ParameterSetName = 'index')]
         [ValidateSet('disabled', 'determining', 'notSupported', `
             'notAuthorized', 'authorizing', 'authorized', 'privileged')]
@@ -160,7 +160,7 @@ Begin {
     $x_api_authorization = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($x_api_authorization))
 }
 
-Process {    
+Process {
 
     If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
@@ -205,8 +205,8 @@ Process {
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                 Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
-            } catch [System.Net.WebException] { 
-                $_.Exception.Response 
+            } catch [System.Net.WebException] {
+                $_.Exception.Response
             } catch {
                 Write-Error $_
             } finally {
@@ -229,7 +229,7 @@ function Get-AuvikDevicesExtendedDetails {
     Param (
         [Parameter(ParameterSetName = 'show')]
         [String]$Id,
- 
+
         [Parameter(ParameterSetName = 'index', Mandatory=$True)]
         [ValidateSet('unknown', 'switch', 'l3Switch', 'router', `
             'accessPoint', 'firewall', 'workstation', 'server', 'storage', `
@@ -259,7 +259,7 @@ Begin {
     $x_api_authorization = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($x_api_authorization))
 }
 
-Process {    
+Process {
 
     If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
@@ -291,8 +291,8 @@ Process {
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                 Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
-            } catch [System.Net.WebException] { 
-                $_.Exception.Response 
+            } catch [System.Net.WebException] {
+                $_.Exception.Response
             } catch {
                 Write-Error $_
             } finally {
