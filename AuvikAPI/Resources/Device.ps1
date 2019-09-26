@@ -3,7 +3,7 @@ function Get-AuvikDevicesInfo {
     Param (
         [Parameter(ParameterSetName = 'show')]
         [String[]]$Id,
- 
+
         [Parameter(ParameterSetName = 'index')]
         [String[]]$Networks = '',
 
@@ -38,12 +38,25 @@ function Get-AuvikDevicesInfo {
         [Parameter(ParameterSetName = 'index')]
         [String[]]$Tenants = '',
 
-        [Parameter(ParameterSetName = 'show')]
-        [Parameter(ParameterSetName = 'index')]
         [ValidateSet('discoveryStatus', 'components', 'connectedDevices', `
             'configurations', 'manageStatus', 'interfaces')]
-        [String[]]$IncludeDetailFields = ''
+        [String[]]$IncludeDetailFields = '',
 
+        # The cursor ID after which device records will be returned as a page, available in the meta property.
+        # Use the Limit parameter to control the size of the page returned.
+        [Parameter(ParameterSetName = 'index')]
+        [String]$After,
+
+        # The cursor ID before which device records will be returned as a page, available in the meta property.
+        # Use the Limit parameter to control the size of the page returned.
+        [Parameter(ParameterSetName = 'index')]
+        [String]$Before,
+
+        # Controls how many devices are returned. If unspecified, the maximum number of devices returned is 100.
+        # Can be supplied with the After or Before parameters, or by itself to generate an initial page of results.
+        [Parameter(ParameterSetName = 'index')]
+        [ValidateRange(1, 1000)]
+        [Int] $Limit
     )
 
 Begin {
@@ -58,7 +71,7 @@ Process {
         $qparams += @{'include' = 'deviceDetail'; 'fields[deviceDetail]' = $IncludeDetailFields -join ','}
     }
 
-    If ($PSCmdlet.ParameterSetName -eq 'index') {
+    If ($PSCmdlet.ParameterSetName -like 'index') {
         $Id = @('')
         If ($Tenants) {
             $qparams += @{'tenants' = $Tenants -join ','}
@@ -81,6 +94,19 @@ Process {
         If ($ModifiedAfter) {
             $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
         }
+        If ($After) {
+            $qparams += @{'page[after]' = $After}
+            If ($Limit) {
+                $qparams += @{'page[first]' = $Limit.ToString()}
+            }
+        } ElseIf ($Before) {
+            $qparams += @{'page[before]' = $Before}
+            If ($Limit) {
+                $qparams += @{'page[last]' = $Limit.ToString()}
+            }
+        } ElseIf ($Limit) {
+            $qparams += @{'page[first]' = $Limit.ToString()}
+        }
     }
     Else {
         #Parameter set "Show" is selected
@@ -100,8 +126,8 @@ Process {
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                 Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
-            } catch [System.Net.WebException] { 
-                $_.Exception.Response 
+            } catch [System.Net.WebException] {
+                $_.Exception.Response
             } catch {
                 Write-Error $_
             } finally {
@@ -109,6 +135,15 @@ Process {
             }
             Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
         } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+
+        If ($rest_output.links.next) {
+            $null = $rest_output.links.next -match '%5Bafter%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'nextCursor' -Value $Matches[1]
+        }
+        If ($rest_output.links.prev) {
+            $null = $rest_output.links.prev -match '%5Bbefore%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'prevCursor' -Value $Matches[1]
+        }
         $data += $rest_output
     }
 }
@@ -125,7 +160,7 @@ function Get-AuvikDevicesDetails {
     Param (
         [Parameter(ParameterSetName = 'show')]
         [String[]]$Id,
- 
+
         [Parameter(ParameterSetName = 'index')]
         [ValidateSet('disabled', 'determining', 'notSupported', `
             'notAuthorized', 'authorizing', 'authorized', 'privileged')]
@@ -150,7 +185,23 @@ function Get-AuvikDevicesDetails {
         [String[]]$Tenants = '',
 
         [Parameter(ParameterSetName = 'index')]
-        [Nullable[Boolean]]$ManagedStatus
+        [Nullable[Boolean]]$ManagedStatus,
+
+        # The cursor ID after which device records will be returned as a page, available in the meta property.
+        # Use the Limit parameter to control the size of the page returned.
+        [Parameter(ParameterSetName = 'index')]
+        [String]$After,
+
+        # The cursor ID before which device records will be returned as a page, available in the meta property.
+        # Use the Limit parameter to control the size of the page returned.
+        [Parameter(ParameterSetName = 'index')]
+        [String]$Before,
+
+        # Controls how many devices are returned. If unspecified, the maximum number of devices returned is 100.
+        # Can be supplied with the After or Before parameters, or by itself to generate an initial page of results.
+        [Parameter(ParameterSetName = 'index')]
+        [ValidateRange(1, 1000)]
+        [Int] $Limit
     )
 
 Begin {
@@ -160,7 +211,7 @@ Begin {
     $x_api_authorization = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($x_api_authorization))
 }
 
-Process {    
+Process {
 
     If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
@@ -186,6 +237,19 @@ Process {
                 $qparams += @{'filter[managedStatus]' = 'false'}
             }
         }
+        If ($After) {
+            $qparams += @{'page[after]' = $After}
+            If ($Limit) {
+                $qparams += @{'page[first]' = $Limit.ToString()}
+            }
+        } ElseIf ($Before) {
+            $qparams += @{'page[before]' = $Before}
+            If ($Limit) {
+                $qparams += @{'page[last]' = $Limit.ToString()}
+            }
+        } ElseIf ($Limit) {
+            $qparams += @{'page[first]' = $Limit.ToString()}
+        }
     }
     Else {
         #Parameter set "Show" is selected
@@ -205,8 +269,8 @@ Process {
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                 Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
-            } catch [System.Net.WebException] { 
-                $_.Exception.Response 
+            } catch [System.Net.WebException] {
+                $_.Exception.Response
             } catch {
                 Write-Error $_
             } finally {
@@ -214,6 +278,15 @@ Process {
             }
             Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
         } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+
+        If ($rest_output.links.next) {
+            $null = $rest_output.links.next -match '%5Bafter%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'nextCursor' -Value $Matches[1]
+        }
+        If ($rest_output.links.prev) {
+            $null = $rest_output.links.prev -match '%5Bbefore%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'prevCursor' -Value $Matches[1]
+        }
         $data += $rest_output
     }
 }
@@ -229,7 +302,7 @@ function Get-AuvikDevicesExtendedDetails {
     Param (
         [Parameter(ParameterSetName = 'show')]
         [String]$Id,
- 
+
         [Parameter(ParameterSetName = 'index', Mandatory=$True)]
         [ValidateSet('unknown', 'switch', 'l3Switch', 'router', `
             'accessPoint', 'firewall', 'workstation', 'server', 'storage', `
@@ -248,8 +321,23 @@ function Get-AuvikDevicesExtendedDetails {
         [datetime]$ModifiedAfter,
 
         [Parameter(ParameterSetName = 'index')]
-        [String[]]$Tenants = ''
+        [String[]]$Tenants = '',
 
+        # The cursor ID after which device records will be returned as a page, available in the meta property.
+        # Use the Limit parameter to control the size of the page returned.
+        [Parameter(ParameterSetName = 'index')]
+        [String]$After,
+
+        # The cursor ID before which device records will be returned as a page, available in the meta property.
+        # Use the Limit parameter to control the size of the page returned.
+        [Parameter(ParameterSetName = 'index')]
+        [String]$Before,
+
+        # Controls how many devices are returned. If unspecified, the maximum number of devices returned is 100.
+        # Can be supplied with the After or Before parameters, or by itself to generate an initial page of results.
+        [Parameter(ParameterSetName = 'index')]
+        [ValidateRange(1, 1000)]
+        [Int] $Limit
     )
 
 Begin {
@@ -259,7 +347,7 @@ Begin {
     $x_api_authorization = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($x_api_authorization))
 }
 
-Process {    
+Process {
 
     If ($PSCmdlet.ParameterSetName -eq 'index') {
         $Id = @('')
@@ -271,6 +359,19 @@ Process {
         }
         If ($ModifiedAfter) {
             $qparams += @{'filter[modifiedAfter]' = $ModifiedAfter.ToString('yyyy-MM-ddTHH:mm:ss.fffzzz')}
+        }
+        If ($After) {
+            $qparams += @{'page[after]' = $After}
+            If ($Limit) {
+                $qparams += @{'page[first]' = $Limit.ToString()}
+            }
+        } ElseIf ($Before) {
+            $qparams += @{'page[before]' = $Before}
+            If ($Limit) {
+                $qparams += @{'page[last]' = $Limit.ToString()}
+            }
+        } ElseIf ($Limit) {
+            $qparams += @{'page[first]' = $Limit.ToString()}
         }
     }
     Else {
@@ -291,8 +392,8 @@ Process {
             $rest_output = try {
                 $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
                 Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
-            } catch [System.Net.WebException] { 
-                $_.Exception.Response 
+            } catch [System.Net.WebException] {
+                $_.Exception.Response
             } catch {
                 Write-Error $_
             } finally {
@@ -300,6 +401,15 @@ Process {
             }
             Write-Verbose "Status Code Returned: $([int]$rest_output.StatusCode)"
         } Until ($([int]$rest_output.StatusCode) -ne 502 -or $attempt -ge 5)
+
+        If ($rest_output.links.next) {
+            $null = $rest_output.links.next -match '%5Bafter%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'nextCursor' -Value $Matches[1]
+        }
+        If ($rest_output.links.prev) {
+            $null = $rest_output.links.prev -match '%5Bbefore%5D=([\w]*)'
+            $rest_output.meta | Add-Member -MemberType NoteProperty -Name 'prevCursor' -Value $Matches[1]
+        }
         $data += $rest_output
     }
 }
