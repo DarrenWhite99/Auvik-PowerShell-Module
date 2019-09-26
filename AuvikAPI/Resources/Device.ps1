@@ -54,6 +54,7 @@ function Get-AuvikDevicesInfo {
 
         # Controls how many devices are returned. If unspecified, the maximum number of devices returned is 100.
         # Can be supplied with the After or Before parameters, or by itself to generate an initial page of results.
+        [Parameter(ParameterSetName = 'index')]
         [ValidateRange(1, 1000)]
         [Int] $Limit
     )
@@ -198,6 +199,7 @@ function Get-AuvikDevicesDetails {
 
         # Controls how many devices are returned. If unspecified, the maximum number of devices returned is 100.
         # Can be supplied with the After or Before parameters, or by itself to generate an initial page of results.
+        [Parameter(ParameterSetName = 'index')]
         [ValidateRange(1, 1000)]
         [Int] $Limit
     )
@@ -333,9 +335,9 @@ function Get-AuvikDevicesExtendedDetails {
 
         # Controls how many devices are returned. If unspecified, the maximum number of devices returned is 100.
         # Can be supplied with the After or Before parameters, or by itself to generate an initial page of results.
+        [Parameter(ParameterSetName = 'index')]
         [ValidateRange(1, 1000)]
         [Int] $Limit
-
     )
 
 Begin {
