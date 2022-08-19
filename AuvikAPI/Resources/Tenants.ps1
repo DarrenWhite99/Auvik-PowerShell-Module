@@ -47,7 +47,7 @@ function Get-AuvikTenantsDetail {
         $x_api_authorization = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($x_api_authorization))
 
         If (!($PrimaryTenant)) {
-            $PrimaryTenant = Get-AuvikTenants | Select-Object -ExpandProperty attributes | Sort-Object -Property @{Expression={$_.tenantType -eq 'multiClient' -and !($_.relationships)}; Ascending=$False} | Select-Object -ExpandProperty domainprefix -First 1
+            $PrimaryTenant = Get-AuvikTenants | Sort-Object -Property @{Expression={$_.attributes.tenantType -eq 'multiClient' -and !($_.relationships)}; Ascending=$False}  | Select-Object -ExpandProperty attributes | Select-Object -ExpandProperty domainprefix -First 1
             Write-Debug "Primary Tenant detected as $PrimaryTenant"
         }
         If (!($PrimaryTenant)) {
