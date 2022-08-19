@@ -21,7 +21,7 @@ function Import-AuvikModuleSettings {
     If (test-path "$($env:USERPROFILE)\AuvikAPI") {
         $tmp_config = Import-LocalizedData -BaseDirectory "$($env:USERPROFILE)\AuvikAPI" -FileName "config.psd1"
 
-        # Send to function to strip potentially superflous slash (/)
+        # Send to function to strip potentially superfluous slash (/)
         Add-AuvikBaseURI $tmp_config.Auvik_Base_URI
 
         $tmp_config.Auvik_API_key = ConvertTo-SecureString $tmp_config.Auvik_API_key
