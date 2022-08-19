@@ -34,7 +34,7 @@ Process {
     Do {
         $attempt+=1
         If ($attempt -gt 1) {Start-Sleep 2}
-        Write-Debug "Testing $($Auvik_Base_URI + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
+        Write-Debug "Testing $('https://auvikapi.my.auvik.com' + $resource_uri)$(If ($qparams.Count -gt 0) {'?' + $(($qparams.GetEnumerator() | ForEach-Object {"$($_.Name)=$($_.Value)"}) -join '&') })"
         $rest_output = try {
             $Null = $AuvikAPI_Headers.Add("Authorization", "Basic $x_api_authorization")
             Invoke-RestMethod -method 'GET' -uri ($Auvik_Base_URI + $resource_uri) -Headers $AuvikAPI_Headers -Body $qparams -ErrorAction SilentlyContinue
